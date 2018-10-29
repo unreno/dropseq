@@ -54,17 +54,18 @@ install-scripts: uninstall-scripts
 		ln -s $$file; \
 	done
 
-clean: clean-all $(TARGETS:%=clean-%)
-	@printf "\nDONE CLEANING\n\n"
-
-clean-all:
-	@printf "\nCLEANING ALL\n\n"
-
+#clean: clean-all $(TARGETS:%=clean-%)
+#	@printf "\nDONE CLEANING\n\n"
+#
+#clean-all:
+#	@printf "\nCLEANING ALL\n\n"
+#
 #	make assumes that you are making this file.
 #	As the dir test exists, it thinks its done, so
 #	we must tell make to run 'make test' regardless.
-.PHONY : test
-
-test:
-	@cd test/; test.bash
+#.PHONY : test
+#
+#test:
+#	@cd test/; test.bash
+#
 
