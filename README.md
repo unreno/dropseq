@@ -193,14 +193,18 @@ drop_seq.bash \
 ```
 
 
+
+
 ##	Analysis
+
+If your sample or your reference is too small, the output will be small and the following analysis will likely fail due to zero's in the data.
 
 
 ```BASH
 R
 ```
 
-Run separately because R is bad at memory management
+Run in two steps because R is bad at memory management.
 
 ```BASH
 create_seurat.R
