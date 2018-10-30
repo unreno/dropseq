@@ -185,10 +185,10 @@ Drop Seq's script expects an unaligned bam as primary input.
 
 ```BASH
 drop_seq.bash \
-	--drop_seq /path/to/Drop-seq_alignment.sh \
+	--drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
 	--estimated-num-cells 20000 \
-	--genomedir $PWD/myRefSTAR \
-	--referencefasta $PWD/myRef/myRef.fasta \
+	--genomedir ${PWD}/myRefSTAR \
+	--referencefasta ${PWD}/myRef/myRef.fasta \
 	B3.bam
 ```
 
