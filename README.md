@@ -8,8 +8,8 @@ It was developed with the following requirements.
 * Picard - picard.jar ( http://broadinstitute.github.io/picard/ )
 * Drop\_seq - Drop-seq\_tools-1.13-3.zip ( http://mccarrolllab.com/dropseq/ )
 * R version 3.5.1 (2018-07-02) -- "Feather Spray"
-* * source("https://bioconductor.org/biocLite.R")
-* * biocLite( c("devtools","Seurat","pryr","gdata","optparse") )
+  * source("https://bioconductor.org/biocLite.R")
+  * biocLite( c("devtools","Seurat","pryr","gdata","optparse") )
 
 
 Newer versions may work, but they have not been tested.
