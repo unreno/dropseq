@@ -101,7 +101,38 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 
 ##	Run Drop Seq Wrapper
 
+
+###	Combine fastq files into unaligned bam file
+
+Drop Seq's script expects an unaligned bam as primary input.
+
+```BASH
+java -jar $PICARD_PATH/picard.jar FastqToSam F1=B3_S1_L001_R1_001.fastq.gz F2=B3_S1_L001_R2_001.fastq.gz O=B3_S1_L001.bam SM=B3_S1_L001
+java -jar $PICARD_PATH/picard.jar FastqToSam F1=B3_S1_L002_R1_001.fastq.gz F2=B3_S1_L002_R2_001.fastq.gz O=B3_S1_L002.bam SM=B3_S1_L002
 ```
+
+If your sample is comprised of multiple pairs of FASTQ files, merge them with ...
+
+```BASH
+java -jar $PICARD_PATH/picard.jar MergeSamFiles \
+	INPUT=B3_S1_L001.bam \
+	INPUT=B3_S1_L002.bam \
+	ASSUME_SORTED=true \
+	SORT_ORDER=queryname \
+	OUTPUT=B3.bam
+```
+
+
+
+
+
+
+
+
+
+##	Execute
+
+```BASH
 drop_seq.bash
 
 
@@ -131,12 +162,14 @@ Examples:
 
 Drop Seq's script expects an unaligned bam or paired fastqs as primary input.
 
-Picard path is ONLY needed if passing fastq files. [ still in development ]
+Picard path is ONLY needed if passing fastq files.
 
 Drop Seq path is ONLY needed if Drop Seq components are not in the path.
 
+[ FASTQ processing still in development ]
 
-```
+
+```BASH
 drop_seq.bash \
 	--drop_seq /path/to/Drop-seq_alignment.sh \
 	--picard /path/to/picard.jar \
@@ -146,32 +179,6 @@ drop_seq.bash \
 	Unaligned_BAM_File
 ```
 
-
-
-which ...
-
-
-
-
-###	Combine fastq files into unaligned bam file
-
-Drop Seq's script expects an unaligned bam as primary input.
-
-```BASH
-java -jar $PICARD_PATH/picard.jar FastqToSam F1=B3_S1_L002_R1_001.fastq.gz F2=B3_S1_L002_R2_001.fastq.gz O=mySample.bam SM=mySample
-```
-
-
-```BASH
-mkdir mySampleOut
-$DROP_SEQ_PATH/Drop-seq_alignment.sh -g $PWD/myRefSTAR -r $PWD/myRef/myRef.fasta -n 20000 -o mySampleOut mySample.bam
-cd mySampleOut
-
-$DROP_SEQ_PATH/BAMTagHistogram INPUT=error_detected.bam OUTPUT=out_cell_readcounts.txt.gz TAG=XC
-zcat out_cell_readcounts.txt.gz | tail -n +2 | awk '{print $2}' | gzip > cell_bc_file.txt.gz
-
-$DROP_SEQ_PATH/DigitalExpression INPUT=error_detected.bam OUTPUT=error_detected.dge.txt.gz CELL_BC_FILE=cell_bc_file.txt.gz SUMMARY=out_gene_exon_tagged.dge.summary.txt MIN_NUM_GENES_PER_CELL=100
-```
 
 ##	Analysis
 
