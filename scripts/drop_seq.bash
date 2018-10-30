@@ -23,8 +23,8 @@ function usage(){
 	echo "$script <OPTIONS> bam_file(s)"
 	echo
 	echo "Options:"
-	echo "  --drop_seq /path/to/Drop-seq_alignment.sh : File or just directory"
-#	echo "  --picard /path/to/picard.jar : File or just directory"
+	echo "	--drop_seq /path/to/Drop-seq_alignment.sh : File or just directory"
+#	echo "	--picard /path/to/picard.jar : File or just directory"
 	echo "	--estimated-num-cells (-n) INTEGER : "
 	echo "	--genomedir (-g) STRING : Directory of STAR genome directory"
 	echo "	--referencefasta (-r) STRING : Reference fasta of the Drop-seq reference metadata bundle"
@@ -32,8 +32,8 @@ function usage(){
 #	echo "	--verbose .................. NO VALUE, just boolean flag"
 	echo
 	echo "Default option values:"
-	echo "  --drop_seq                ${DROP_SEQ_PATH}"
-#	echo "  --picard                  ${PICARD_PATH}"
+	echo "	--drop_seq                ${DROP_SEQ_PATH}"
+#	echo "	--picard                  ${PICARD_PATH}"
 	echo "	--estimated-num-cells ... ${num_cells}"
 	echo "	--genomedir ............. ${genomedir}"
 	echo "	--referencefasta ........ ${referencefasta}"
