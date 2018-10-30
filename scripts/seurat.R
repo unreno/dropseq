@@ -1,6 +1,9 @@
 #!/usr/bin/env Rscript
 
 
+#	source("https://bioconductor.org/biocLite.R")
+#	biocLite( c( "devtools", "Seurat","pryr","gdata") )
+
 print("Loading libraries")
 
 #install.packages("devtools")
