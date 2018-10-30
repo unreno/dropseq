@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 
 
-script=`basename $0`
+script=$( basename $0 )
 
 #	Defaults:
 #max=5
 num_cells=20000
-genomedir="$HOME/working/mm10c_star"
-referencefasta="$HOME/mm10c/mm10c.fasta"
+genomedir="./myRef"
+referencefasta="./myRef/myRef.fasta"
+
+DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
 
 function usage(){
 	echo
 	echo "Wrapper around calling Drop-seq_alignment.sh"
+	echo
+	echo "Script will loop over each bam file provided."
 	echo
 	echo "Usage:"
 	echo
@@ -76,9 +80,9 @@ while [ $# -ne 0 ] ; do
 	bam_base=${bam_file_with_path%%.*}
 	bam_base=${bam_base##*/}
 	mkdir -p "${bam_base}"
-	
+
 	#	prototype script for AWS AMI so many hard coded values
-	#		
+	#
 	#		-g <genomedir>      : Directory of STAR genome directory.  Required.
 	#		-r <referencefasta> : Reference fasta of the Drop-seq reference metadata bundle.  Required.
 	#		-n <estimated-num-cells> : estimate of number of cells in experiment.  Required.
@@ -88,48 +92,112 @@ while [ $# -ne 0 ] ; do
 	#		-s <STAR_path>      : Full path of STAR.  Default: STAR is found via PATH environment variable.
 	#		-p                  : Reduce file I/O by pipeline commands together.  Requires more memory and processing power.
 	#		-e                  : Echo commands instead of executing them.  Cannot use with -p.
-	#		
+	#
 
 	#	Last line of Drop-seq_alignment deletes all tmp files, so I commented that line out to see if useful.
 	#	Should be an option
 
-	cmd="Drop-seq_alignment.sh \
-		-g ${genomedir} \
-		-r ${referencefasta} \
-		-n ${num_cells} \
-		-o ${bam_base} \
-		${bam_file_with_path}"
-	echo $cmd
-	$cmd
+	if [ ! -d ${bam_base} ] ; then
+
+		mkdir ${bam_base}
+
+	fi
+
+
+	if [ -f ${bam_base}/error_detected.bam ] ; then
+
+		echo "${bam_base}/error_detected.bam exists. Drop seq already run."
+
+	else
+
+		cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
+			-g ${genomedir} \
+			-r ${referencefasta} \
+			-n ${num_cells} \
+			-o ${bam_base} \
+			${bam_file_with_path}"
+		echo $cmd
+		$cmd
+
+	fi
+
 
 	cd "${bam_base}"
 
 
-	BAMTagHistogram \
-		INPUT=error_detected.bam \
-		OUTPUT=out_cell_readcounts.txt.gz \
-		TAG=XC
+	if [ -f error_detected.bam ] && [ -f out_cell_readcounts.txt.gz ] ; then
 
-	#
-	#	Only keep those with more than one. This is just a test.
-	#
-	#zcat out_cell_readcounts.txt.gz | tail -n +2 | awk '( $1 > 1 ){print $2}' | gzip > cell_bc_file.txt.gz
-	zcat out_cell_readcounts.txt.gz | tail -n +2 | awk '{print $2}' | gzip > cell_bc_file.txt.gz
+		echo "out_cell_readcounts.txt.gz exists. BAMTagHistogram already run."
 
-	DigitalExpression \
-		INPUT=error_detected.bam \
-		OUTPUT=error_detected.dge.txt.gz \
-		CELL_BC_FILE=cell_bc_file.txt.gz \
-		SUMMARY=out_gene_exon_tagged.dge.summary.txt \
-		MIN_NUM_GENES_PER_CELL=100
+	else
 
-	create_seurat.R
+		cmd="${DROP_SEQ_PATH}/BAMTagHistogram \
+			INPUT=error_detected.bam \
+			OUTPUT=out_cell_readcounts.txt.gz \
+			TAG=XC"
+		echo $cmd
+		$cmd
 
-	#	R is pretty bad at garbage collection.
-	#	Reading error_detected.dge.txt.gz and creating the seurat object then quiting.
-	#	Then running another script that reads in the seurat works well.
+	fi
 
-	seurat.R --redo
+	if [ -f out_cell_readcounts.txt.gz ] && [ -f cell_bc_file.txt.gz ] ; then
+
+		echo "cell_bc_file.txt.gz already exists."
+
+	else
+
+		#
+		#	Only keep those with more than one. This is just a test.
+		#
+		#zcat out_cell_readcounts.txt.gz | tail -n +2 | awk '( $1 > 1 ){print $2}' | gzip > cell_bc_file.txt.gz
+		zcat out_cell_readcounts.txt.gz | tail -n +2 | awk '{print $2}' | gzip > cell_bc_file.txt.gz
+
+	fi
+
+	if [ -f error_detected.bam ] && [ -f error_detected.dge.txt.gz ] ; then
+
+		echo "error_detected.dge.txt.gz exists. DigitalExpression already run."
+
+	else
+
+		cmd="${DROP_SEQ_PATH}/DigitalExpression \
+			INPUT=error_detected.bam \
+			OUTPUT=error_detected.dge.txt.gz \
+			CELL_BC_FILE=cell_bc_file.txt.gz \
+			SUMMARY=out_gene_exon_tagged.dge.summary.txt \
+			MIN_NUM_GENES_PER_CELL=100"
+		echo $cmd
+		$cmd
+
+	fi
+
+	if [ -f error_detected.dge.txt.gz ] && [ -f InitialSeuratObjectSample.RData ] ; then
+
+		echo "InitialSeuratObjectSample.RData exists. create_seurat.R already run."
+
+	else
+
+		cmd=create_seurat.R
+		echo $cmd
+		$cmd
+
+	fi
+
+	if [ -f InitialSeuratObjectSample.RData ] && [ -f Rplots.pdf ] ; then
+
+		echo "Rplots.pdf exists. seurat.R already run."
+
+	else
+
+		#	R is pretty bad at garbage collection.
+		#	Reading error_detected.dge.txt.gz and creating the seurat object then quiting.
+		#	Then running another script that reads in the seurat works well.
+
+		cmd="seurat.R --redo"
+		echo $cmd
+		$cmd
+
+	fi
 
 	echo
 	shift

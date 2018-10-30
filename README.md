@@ -102,7 +102,30 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 ##	Run Drop Seq Wrapper
 
 ```
-drop_seq.bash --help
+drop_seq.bash
+
+
+Wrapper around calling Drop-seq_alignment.sh
+
+Usage:
+
+drop_seq.bash <OPTIONS> bam_file(s)
+
+Options:
+	--estimated-num-cells (-n) INTEGER : 
+	--genomedir (-g) STRING : Directory of STAR genome directory
+	--referencefasta (-r) STRING : Reference fasta of the Drop-seq reference metadata bundle
+
+Default option values:
+	--estimated-num-cells ... 20000
+	--genomedir ............. ./myRef
+	--referencefasta ........ ./myRef/myRef.fasta
+
+Examples:
+	drop_seq.bash file.bam
+
+
+
 ```
 
 
