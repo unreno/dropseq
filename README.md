@@ -162,13 +162,13 @@ Usage:
 drop_seq.bash <OPTIONS> bam_file(s)
 
 Options:
-  --drop_seq /path/to/Drop-seq_alignment.sh : File or just directory
+	--drop_seq /path/to/Drop-seq_alignment.sh : File or just directory
 	--estimated-num-cells (-n) INTEGER : 
 	--genomedir (-g) STRING : Directory of STAR genome directory
 	--referencefasta (-r) STRING : Reference fasta of the Drop-seq reference metadata bundle
 
 Default option values:
-  --drop_seq                /Users/jakewendt/Downloads/Drop-seq_tools-1.13
+	--drop_seq                /Users/jakewendt/Downloads/Drop-seq_tools-1.13
 	--estimated-num-cells ... 20000
 	--genomedir ............. ./myRef
 	--referencefasta ........ ./myRef/myRef.fasta
