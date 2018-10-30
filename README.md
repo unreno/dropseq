@@ -19,13 +19,13 @@ Newer versions may work, but they have not been tested.
 
 * Download this repository.
 * Either ...
-* * Copy or link the Makefile.example to Makefile
-* * Edit the Makefile as necessary to install scripts where you'd like
-* * Run `make install`
+  * Copy or link the Makefile.example to Makefile
+  * Edit the Makefile as necessary to install scripts where you'd like
+  * Run `make install`
 * ... or ...
-* * Copy the scripts from scripts/ to where ever you want them
+  * Copy the scripts from scripts/ to where ever you want them
 * ... or ...
-* * Run the scripts in scripts/ from where they are
+  * Run the scripts in scripts/ from where they are
 
 
 
