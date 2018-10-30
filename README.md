@@ -106,9 +106,16 @@ drop_seq.bash --help
 ```
 
 
+Drop Seq's script expects an unaligned bam or paired fastqs as primary input.
+
+Picard path is ONLY needed if passing fastq files.
+
+Drop Seq path is ONLY needed if Drop Seq components are not in the path.
+
 
 ```
 drop_seq.bash \
+	--drop_seq /path/to/Drop-seq_alignment.sh \
 	--picard /path/to/picard.jar \
 	--estimated-num-cells 20000 \
 	--genomedir $PWD/myRefSTAR \
@@ -116,7 +123,12 @@ drop_seq.bash \
 	[F1 F2 or BAM]
 ```
 
+
+
 which ...
+
+
+
 
 ###	Combine fastq files into unaligned bam file
 
@@ -134,9 +146,9 @@ cd mySampleOut
 
 $DROP_SEQ_PATH/BAMTagHistogram INPUT=error_detected.bam OUTPUT=out_cell_readcounts.txt.gz TAG=XC
 zcat out_cell_readcounts.txt.gz | tail -n +2 | awk '{print $2}' | gzip > cell_bc_file.txt.gz
+
 $DROP_SEQ_PATH/DigitalExpression INPUT=error_detected.bam OUTPUT=error_detected.dge.txt.gz CELL_BC_FILE=cell_bc_file.txt.gz SUMMARY=out_gene_exon_tagged.dge.summary.txt MIN_NUM_GENES_PER_CELL=100
 ```
-
 
 ##	Analysis
 
