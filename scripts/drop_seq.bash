@@ -77,9 +77,6 @@ while [ $# -ne 0 ] ; do
 	bam_base=${bam_base##*/}
 	mkdir -p "${bam_base}"
 	
-#	tmp=${bam_base}/tmp
-#	mkdir -p "${tmp}"
-
 	#	prototype script for AWS AMI so many hard coded values
 	#		
 	#		-g <genomedir>      : Directory of STAR genome directory.  Required.
@@ -93,25 +90,8 @@ while [ $# -ne 0 ] ; do
 	#		-e                  : Echo commands instead of executing them.  Cannot use with -p.
 	#		
 
-#	Last line of Drop-seq_alignment deletes all tmp files, so I commented that line out to see if useful.
-#	Should be an option
-
-#	Once STAR in path, can remove from here.
-#	Once DropSeq in path, can remove path from command (NEED TO MOVE (or link) ALL DROP SEQ SCRIPTS TO SAME DIR)
-#	Add options for mm10 star ref dir and mm10 fasta dir
-
-#	cmd="~/Drop-seq_tools-1.13/Drop-seq_alignment.sh \
-#		-s ~/STAR-2.5.3a/bin/Linux_x86_64/STAR \
-#		-g ~/working/mm10_star/ \
-#		-r ~/mm10/mm10.fasta \
-#		-t "${tmp}" \
-
-
-#	EC2 no longer happy with ~ and absence of absolute STAR dir
-#	may have to re-add this, and with /home/ec2-user/ instead of ~/
-#
-#	Seems unneeded now
-#		-s ~/STAR-2.5.3a/bin/Linux_x86_64/STAR \
+	#	Last line of Drop-seq_alignment deletes all tmp files, so I commented that line out to see if useful.
+	#	Should be an option
 
 	cmd="Drop-seq_alignment.sh \
 		-g ${genomedir} \
@@ -123,10 +103,35 @@ while [ $# -ne 0 ] ; do
 	$cmd
 
 	cd "${bam_base}"
-	cmd="dge.bash"
-	echo $cmd
-	$cmd
+
+
+	BAMTagHistogram \
+		INPUT=error_detected.bam \
+		OUTPUT=out_cell_readcounts.txt.gz \
+		TAG=XC
+
+	#
+	#	Only keep those with more than one. This is just a test.
+	#
+	#zcat out_cell_readcounts.txt.gz | tail -n +2 | awk '( $1 > 1 ){print $2}' | gzip > cell_bc_file.txt.gz
+	zcat out_cell_readcounts.txt.gz | tail -n +2 | awk '{print $2}' | gzip > cell_bc_file.txt.gz
+
+	DigitalExpression \
+		INPUT=error_detected.bam \
+		OUTPUT=error_detected.dge.txt.gz \
+		CELL_BC_FILE=cell_bc_file.txt.gz \
+		SUMMARY=out_gene_exon_tagged.dge.summary.txt \
+		MIN_NUM_GENES_PER_CELL=100
+
+	create_seurat.R
+
+	#	R is pretty bad at garbage collection.
+	#	Reading error_detected.dge.txt.gz and creating the seurat object then quiting.
+	#	Then running another script that reads in the seurat works well.
+
+	seurat.R --redo
 
 	echo
 	shift
 done
+

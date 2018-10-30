@@ -108,7 +108,7 @@ drop_seq.bash --help
 
 Drop Seq's script expects an unaligned bam or paired fastqs as primary input.
 
-Picard path is ONLY needed if passing fastq files.
+Picard path is ONLY needed if passing fastq files. [ still in development ]
 
 Drop Seq path is ONLY needed if Drop Seq components are not in the path.
 
@@ -120,7 +120,7 @@ drop_seq.bash \
 	--estimated-num-cells 20000 \
 	--genomedir $PWD/myRefSTAR \
 	--referencefasta $PWD/myRef/myRef.fasta \
-	[F1 F2 or BAM]
+	Unaligned_BAM_File
 ```
 
 
