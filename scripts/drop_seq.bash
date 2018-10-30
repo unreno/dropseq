@@ -10,6 +10,7 @@ genomedir="./myRef"
 referencefasta="./myRef/myRef.fasta"
 
 DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
+PICARD_PATH=~/Downloads/picard.jar
 
 function usage(){
 	echo
@@ -22,6 +23,8 @@ function usage(){
 	echo "$script <OPTIONS> bam_file(s)"
 	echo
 	echo "Options:"
+	echo "  --drop_seq /path/to/Drop-seq_alignment.sh : File or just directory"
+#	echo "  --picard /path/to/picard.jar : File or just directory"
 	echo "	--estimated-num-cells (-n) INTEGER : "
 	echo "	--genomedir (-g) STRING : Directory of STAR genome directory"
 	echo "	--referencefasta (-r) STRING : Reference fasta of the Drop-seq reference metadata bundle"
@@ -29,6 +32,8 @@ function usage(){
 #	echo "	--verbose .................. NO VALUE, just boolean flag"
 	echo
 	echo "Default option values:"
+	echo "  --drop_seq                ${DROP_SEQ_PATH}"
+#	echo "  --picard                  ${PICARD_PATH}"
 	echo "	--estimated-num-cells ... ${num_cells}"
 	echo "	--genomedir ............. ${genomedir}"
 	echo "	--referencefasta ........ ${referencefasta}"
@@ -51,6 +56,10 @@ while [ $# -ne 0 ] ; do
 			shift; genomedir=$1; shift;;
 		-r|--referencefasta)
 			shift; referencefasta=$1; shift;;
+		--drop_seq)
+			shift; DROP_SEQ_PATH=$1; shift;;
+		--picard)
+			shift; PICARD_PATH=$1; shift;;
 #		-m|--m*)
 #			shift; max=$1; shift;;
 #		-v|--v*)
@@ -109,6 +118,12 @@ while [ $# -ne 0 ] ; do
 		echo "${bam_base}/error_detected.bam exists. Drop seq already run."
 
 	else
+
+		if [ ! -f "${DROP_SEQ_PATH}/Drop-seq_alignment.sh" ] ; then
+			echo "${DROP_SEQ_PATH}/Drop-seq_alignment.sh not found and is required."
+			echo "Cannot continue."
+			exit 1
+		fi
 
 		cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
 			-g ${genomedir} \

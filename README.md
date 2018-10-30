@@ -101,15 +101,36 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 
 ##	Run Drop Seq Wrapper
 
+###	Prepare your dataset
 
-###	Combine fastq files into unaligned bam file
+####	Combine fastq files into unaligned bam file
 
 Drop Seq's script expects an unaligned bam as primary input.
 
 ```BASH
-java -jar $PICARD_PATH/picard.jar FastqToSam F1=B3_S1_L001_R1_001.fastq.gz F2=B3_S1_L001_R2_001.fastq.gz O=B3_S1_L001.bam SM=B3_S1_L001
-java -jar $PICARD_PATH/picard.jar FastqToSam F1=B3_S1_L002_R1_001.fastq.gz F2=B3_S1_L002_R2_001.fastq.gz O=B3_S1_L002.bam SM=B3_S1_L002
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+	F1=B3_S1_L001_R1_001.fastq.gz \
+	F2=B3_S1_L001_R2_001.fastq.gz \
+	O=B3_S1_L001.bam SM=B3_S1_L001
+
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+	F1=B3_S1_L002_R1_001.fastq.gz \
+	F2=B3_S1_L002_R2_001.fastq.gz \
+	O=B3_S1_L002.bam SM=B3_S1_L002
+
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+	F1=B3_S1_L003_R1_001.fastq.gz \
+	F2=B3_S1_L003_R2_001.fastq.gz \
+	O=B3_S1_L003.bam SM=B3_S1_L003
+
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+	F1=B3_S1_L004_R1_001.fastq.gz \
+	F2=B3_S1_L004_R2_001.fastq.gz \
+	O=B3_S1_L004.bam SM=B3_S1_L004
 ```
+
+
+####	Merge sample bam files
 
 If your sample is comprised of multiple pairs of FASTQ files, merge them with ...
 
@@ -117,15 +138,12 @@ If your sample is comprised of multiple pairs of FASTQ files, merge them with ..
 java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	INPUT=B3_S1_L001.bam \
 	INPUT=B3_S1_L002.bam \
+	INPUT=B3_S1_L003.bam \
+	INPUT=B3_S1_L004.bam \
 	ASSUME_SORTED=true \
 	SORT_ORDER=queryname \
 	OUTPUT=B3.bam
 ```
-
-
-
-
-
 
 
 
@@ -135,19 +153,22 @@ java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 ```BASH
 drop_seq.bash
 
-
 Wrapper around calling Drop-seq_alignment.sh
+
+Script will loop over each bam file provided.
 
 Usage:
 
 drop_seq.bash <OPTIONS> bam_file(s)
 
 Options:
+  --drop_seq /path/to/Drop-seq_alignment.sh : File or just directory
 	--estimated-num-cells (-n) INTEGER : 
 	--genomedir (-g) STRING : Directory of STAR genome directory
 	--referencefasta (-r) STRING : Reference fasta of the Drop-seq reference metadata bundle
 
 Default option values:
+  --drop_seq                /Users/jakewendt/Downloads/Drop-seq_tools-1.13
 	--estimated-num-cells ... 20000
 	--genomedir ............. ./myRef
 	--referencefasta ........ ./myRef/myRef.fasta
@@ -155,28 +176,20 @@ Default option values:
 Examples:
 	drop_seq.bash file.bam
 
-
-
 ```
 
 
-Drop Seq's script expects an unaligned bam or paired fastqs as primary input.
+Drop Seq's script expects an unaligned bam as primary input.
 
-Picard path is ONLY needed if passing fastq files.
-
-Drop Seq path is ONLY needed if Drop Seq components are not in the path.
-
-[ FASTQ processing still in development ]
 
 
 ```BASH
 drop_seq.bash \
 	--drop_seq /path/to/Drop-seq_alignment.sh \
-	--picard /path/to/picard.jar \
 	--estimated-num-cells 20000 \
 	--genomedir $PWD/myRefSTAR \
 	--referencefasta $PWD/myRef/myRef.fasta \
-	Unaligned_BAM_File
+	B3.bam
 ```
 
 
