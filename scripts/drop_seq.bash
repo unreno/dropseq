@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
 
+set -e	#	exit if any command fails
+set -u	#	Error on usage of unset variables
+set -o pipefail
+
+
+
 script=$( basename $0 )
 
 #	Defaults:
@@ -117,6 +123,7 @@ while [ $# -ne 0 ] ; do
 
 	fi
 
+	echo "Running Drop Seq."
 
 	if [ -f ${bam_base}/error_detected.bam ] ; then
 
@@ -127,7 +134,7 @@ while [ $# -ne 0 ] ; do
 		if [ ! -f "${DROP_SEQ_PATH}/Drop-seq_alignment.sh" ] ; then
 			echo "${DROP_SEQ_PATH}/Drop-seq_alignment.sh not found and is required."
 			echo "Cannot continue."
-			exit 1
+			exit 2
 		fi
 
 		cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
@@ -141,11 +148,20 @@ while [ $# -ne 0 ] ; do
 
 	fi
 
+	if [ ! -f "${bam_base}/error_detected.bam" ] ; then
+
+		echo "error_detected.bam not found. Drop Seq failed? Cannot continue."
+		exit 3
+
+	fi
+
 
 	cd "${bam_base}"
 
 
-	if [ -f error_detected.bam ] && [ -f out_cell_readcounts.txt.gz ] ; then
+	echo "Running BAMTagHistogram."
+
+	if [ -f out_cell_readcounts.txt.gz ] ; then
 
 		echo "out_cell_readcounts.txt.gz exists. BAMTagHistogram already run."
 
@@ -174,7 +190,9 @@ while [ $# -ne 0 ] ; do
 
 	fi
 
-	if [ -f error_detected.bam ] && [ -f error_detected.dge.txt.gz ] ; then
+	echo "Running DigitalExpression."
+
+	if [ -f error_detected.dge.txt.gz ] ; then
 
 		echo "error_detected.dge.txt.gz exists. DigitalExpression already run."
 
@@ -191,6 +209,8 @@ while [ $# -ne 0 ] ; do
 
 	fi
 
+	echo "Running create_seurat.R"
+
 	if [ -f error_detected.dge.txt.gz ] && [ -f InitialSeuratObjectSample.RData ] ; then
 
 		echo "InitialSeuratObjectSample.RData exists. create_seurat.R already run."
@@ -202,6 +222,8 @@ while [ $# -ne 0 ] ; do
 		$cmd
 
 	fi
+
+	echo "Running seurat.R"
 
 	if [ -f InitialSeuratObjectSample.RData ] && [ -f Rplots.pdf ] ; then
 
