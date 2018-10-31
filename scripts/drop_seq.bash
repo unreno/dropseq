@@ -76,6 +76,11 @@ done
 
 
 
+if [ -f ${DROP_SEQ_PATH} ] ; then
+	DROP_SEQ_PATH=$( dirname ${DROP_SEQ_PATH} )
+fi
+
+
 
 
 
