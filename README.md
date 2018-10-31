@@ -40,10 +40,10 @@ Perhaps download and combine the fasta.gz files from http://hgdownload.cse.ucsc.
 Append existing or create a new fasta file with any special sequences for your reference.
 
 ```
->SV40polya
-ATCTAGATAACTGAT ...
 >eGFP
 ATGGTGAGCAAGGGC ...
+>SV40polya
+ATCTAGATAACTGAT ...
 ```
 
 ###	Create reference ".gtf" file
