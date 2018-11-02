@@ -1,17 +1,16 @@
 #!/usr/bin/env Rscript
 
 
+
+#	source("https://bioconductor.org/biocLite.R")
+#	biocLite( c( "devtools", "Seurat","pryr","gdata") )
+
 print("Loading libraries")
 
-#install.packages("devtools")
 library(devtools)
 
-#install_github("satijalab/seurat", ref = "3bd092a")	#	No. Doesn't include CreateSeuratObject and likely others.
-#install.packages("httpuv")
-#install.packages("Seurat")
 library(Seurat)
 
-#	install.packages("pryr")
 library(pryr)
 #	object_size(some_object)
 #	humanReadable(mem_used())

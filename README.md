@@ -6,6 +6,10 @@ It was developed with the following requirements.
 
 * STAR - STAR-2.5.3a.tar.gz  ( https://github.com/alexdobin/STAR/releases )
 * Picard - picard.jar ( http://broadinstitute.github.io/picard/ )
+  * https://github.com/broadinstitute/picard/releases/tag/2.18.15
+  * https://github.com/broadinstitute/picard/releases/latest
+  * grep Implementation-Version <( unzip -p picard.jar META-INF/MANIFEST.MF )
+  * Implementation-Version: 2.18.15-SNAPSHOT
 * Drop\_seq - Drop-seq\_tools-1.13-3.zip ( http://mccarrolllab.com/dropseq/ )
 * R version 3.5.1 (2018-07-02) -- "Feather Spray"
   * source("https://bioconductor.org/biocLite.R")
@@ -108,6 +112,7 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 Drop Seq's script expects an unaligned bam as primary input.
 
 ```BASH
+export PICARD_PATH=~/Downloads/
 java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B3_S1_L001_R1_001.fastq.gz \
 	F2=B3_S1_L001_R2_001.fastq.gz \
@@ -127,6 +132,28 @@ java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B3_S1_L004_R1_001.fastq.gz \
 	F2=B3_S1_L004_R2_001.fastq.gz \
 	O=B3_S1_L004.bam SM=B3_S1_L004
+
+
+export PICARD_PATH=~/Downloads/
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+	F1=B4_S2_L001_R1_001.fastq.gz \
+	F2=B4_S2_L001_R2_001.fastq.gz \
+	O=B4_S2_L001.bam SM=B4_S2_L001
+
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+	F1=B4_S2_L002_R1_001.fastq.gz \
+	F2=B4_S2_L002_R2_001.fastq.gz \
+	O=B4_S2_L002.bam SM=B4_S2_L002
+
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+	F1=B4_S2_L003_R1_001.fastq.gz \
+	F2=B4_S2_L003_R2_001.fastq.gz \
+	O=B4_S2_L003.bam SM=B4_S2_L003
+
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+	F1=B4_S2_L004_R1_001.fastq.gz \
+	F2=B4_S2_L004_R2_001.fastq.gz \
+	O=B4_S2_L004.bam SM=B4_S2_L004
 ```
 
 
@@ -135,6 +162,7 @@ java -jar $PICARD_PATH/picard.jar FastqToSam \
 If your sample is comprised of multiple pairs of FASTQ files, merge them with ...
 
 ```BASH
+export PICARD_PATH=~/Downloads/
 java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	INPUT=B3_S1_L001.bam \
 	INPUT=B3_S1_L002.bam \
@@ -143,6 +171,17 @@ java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	ASSUME_SORTED=true \
 	SORT_ORDER=queryname \
 	OUTPUT=B3.bam
+
+
+export PICARD_PATH=~/Downloads/
+java -jar $PICARD_PATH/picard.jar MergeSamFiles \
+	INPUT=B4_S2_L001.bam \
+	INPUT=B4_S2_L002.bam \
+	INPUT=B4_S2_L003.bam \
+	INPUT=B4_S2_L004.bam \
+	ASSUME_SORTED=true \
+	SORT_ORDER=queryname \
+	OUTPUT=B4.bam
 ```
 
 
@@ -190,7 +229,14 @@ drop_seq.bash \
 	--genomedir ${PWD}/myRefSTAR \
 	--referencefasta ${PWD}/myRef/myRef.fasta \
 	B3.bam
+
+
+drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh --estimated-num-cells 20000 --genomedir ${PWD}/mm10STAR --referencefasta ${PWD}/mm10/mm10.fasta B4.bam
 ```
+
+
+
+
 
 
 

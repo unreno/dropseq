@@ -6,15 +6,10 @@
 
 print("Loading libraries")
 
-#install.packages("devtools")
 library(devtools)
 
-#install_github("satijalab/seurat", ref = "3bd092a")	#	No. Doesn't include CreateSeuratObject and likely others.
-#install.packages("httpuv")
-#install.packages("Seurat")
 library(Seurat)
 
-#	install.packages("pryr")
 library(pryr)
 #	object_size(some_object)
 #	humanReadable(mem_used())
@@ -113,14 +108,23 @@ if( opt$redo ) {
 
 
 
+#	These are gene specific?
 
-print("Creating VlnPlot")
-VlnPlot(object = ds, features.plot = c("nGene", "nUMI"), nCol = 2)
-print(paste0("mem_used after VlnPlot :",humanReadable(mem_used()),": at :", date(),":"))
 
-print("Creating GenePlot")
-GenePlot(object = ds, gene1 = "nUMI", gene2 = "nGene")
-print(paste0("mem_used after GenePlot :",humanReadable(mem_used()),": at :", date(),":"))
+
+#print("Creating VlnPlot")
+#VlnPlot(object = ds, features.plot = c("nGene", "nUMI"), nCol = 2)
+#print(paste0("mem_used after VlnPlot :",humanReadable(mem_used()),": at :", date(),":"))
+
+#print("Creating GenePlot")
+#GenePlot(object = ds, gene1 = "nUMI", gene2 = "nGene")
+#print(paste0("mem_used after GenePlot :",humanReadable(mem_used()),": at :", date(),":"))
+
+
+
+#Error in plot.window(...) : need finite 'xlim' values
+
+
 
 print("NormalizeData")
 ds <- NormalizeData(object = ds)
