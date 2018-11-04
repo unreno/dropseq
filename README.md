@@ -37,7 +37,7 @@ Newer versions may work, but they have not been tested.
 ##	Prepare STAR reference
 
 
-###	Create reference ".fasta" file
+###	Create required reference `.fasta` file
 
 Perhaps download and combine the fasta.gz files from http://hgdownload.cse.ucsc.edu/goldenpath/mm10/chromosomes/
 
@@ -50,16 +50,16 @@ ATGGTGAGCAAGGGC ...
 ATCTAGATAACTGAT ...
 ```
 
-###	Create reference ".gtf" file
+###	Create required reference ".gtf" file
 
-Append existing or create a new .gtf file for use by STAR like so ...
+Append existing or create a new ".gtf" file for use by STAR like so ...
 
 ```
 eGFP	AddedGenes	exon	1	720	.	+	0	gene_id "eGFP"; gene_name "eGFP"; transcript_id "eGFP"; transcript_name "eGFP";
 SV40polya	AddedGenes	exon	1	240	.	+	0	gene_id "SV40polya"; gene_name "SV40polya"; transcript_id "SV40polya"; transcript_name "SV40polya";
 ```
 
-Or like so where the tabs have been converted to pipes (JUST for your viewing pleasure. A gtf file is a TAB separated file.)
+Or like so where the tabs have been converted to pipes (JUST for your viewing pleasure. A ".gtf" file is a TAB separated file.)
 
 ```
 eGFP|AddedGenes|exon|1|720|.|+|0|gene_id "eGFP"; gene_name "eGFP"; transcript_id "eGFP"; transcript_name "eGFP";
@@ -67,7 +67,7 @@ SV40polya|AddedGenes|exon|1|240|.|+|0|gene_id "SV40polya"; gene_name "SV40polya"
 ```
 
 
-###	And create a reference ".dict" using Picard's CreateSequenceDictionary
+###	Create required reference ".dict" using Picard's CreateSequenceDictionary
 
 This only takes a few seconds
 
@@ -76,7 +76,29 @@ export PICARD_PATH=~/Downloads/
 java -jar $PICARD_PATH/picard.jar CreateSequenceDictionary REFERENCE=myRef/myRef.fasta
 ```
 
-###	Create reference ".refFlat" file
+```BASH
+export PICARD_PATH=~/Downloads/
+java -jar $PICARD_PATH/picard.jar CreateSequenceDictionary REFERENCE=mm10/mm10.fasta
+```
+
+
+
+The ".dict" file should have 1 more line that the number of sequences in the reference ".fasta" file.
+
+For example, 
+
+```BASH
+wc -l mm10.dict 
+69 mm10.dict
+
+grep -c "^>" mm10.fasta 
+68
+```
+
+
+
+
+###	Create required reference ".refFlat" file
 
 Not too long here either.
 
@@ -87,11 +109,50 @@ export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
 $DROP_SEQ_PATH/ConvertToRefFlat ANNOTATIONS_FILE=myRef/myRef.gtf SEQUENCE_DICTIONARY=myRef/myRef.dict OUTPUT=myRef/myRef.refFlat
 ```
 
+```BASH
+export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
+$DROP_SEQ_PATH/ConvertToRefFlat ANNOTATIONS_FILE=mm10/mm10.gtf SEQUENCE_DICTIONARY=mm10/mm10.dict OUTPUT=mm10/mm10.refFlat
+```
+
+This creates a refFlat file with only my 2 modifications? Have I formatted my ".gtf" file incorrectly?
+
+
+Trying a different utility to create a ".refFlat" file.
+
+This creates a much larger ".refFlat" file. Correct? From UCSC's Kent Utils.
+
+```BASH
+gtfToGenePred mm10.gtf mm10.refFlat
+```
+
+
+The ".refFlat" file should have a line for each of the transcript ids in the ".gtf" file.
+
+For example,
+
+```BASH
+wc -l mm10.gtf mm10.refFlat 
+  1131185 mm10.gtf
+    88228 mm10.refFlat
+  1219413 total
+
+sed -e 's/^.*transcript_id "//' -e 's/".*$//' mm10.gtf > mm10.gtf.transcript_ids
+
+sort mm10.gtf.transcript_ids | uniq | wc -l
+88228
+```
+
+
+
+
 ###	Create actual STAR reference
 
 ```BASH
 mkdir myRefSTAR
 STAR --genomeFastaFiles myRef/myRef.fasta --runMode genomeGenerate --genomeDir $PWD/myRefSTAR --sjdbGTFfile myRef/myRef.gtf 
+
+mkdir mm10STAR
+STAR --genomeFastaFiles mm10/mm10.fasta --runMode genomeGenerate --genomeDir $PWD/mm10STAR --sjdbGTFfile mm10/mm10.gtf 
 ```
 
 If the reference fasta is small, or if you are getting seg faults during the alignment, you may wish to recreate the index with a lower the value for option `--genomeSAindexNbases`. Its default is 14, so try 5 or something. My index only had 2 sequences in it and this fixed it for me.
