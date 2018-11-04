@@ -147,6 +147,10 @@ sort mm10.gtf.transcript_ids | uniq | wc -l
 
 ###	Create actual STAR reference
 
+
+This can take a couple hours.
+
+
 ```BASH
 mkdir myRefSTAR
 STAR --genomeFastaFiles myRef/myRef.fasta --runMode genomeGenerate --genomeDir $PWD/myRefSTAR --sjdbGTFfile myRef/myRef.gtf 
@@ -284,6 +288,8 @@ Drop Seq's script expects an unaligned bam as primary input.
 
 
 ```BASH
+export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
+
 drop_seq.bash \
 	--drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
 	--estimated-num-cells 20000 \
