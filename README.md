@@ -102,7 +102,7 @@ grep -c "^>" mm10.fasta
 
 Not too long here either.
 
-Using Drop Seq tools' ConvertToRefFlat
+Using Drop Seq tools' `ConvertToRefFlat`
 
 ```BASH
 export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
@@ -114,10 +114,10 @@ export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
 $DROP_SEQ_PATH/ConvertToRefFlat ANNOTATIONS_FILE=mm10/mm10.gtf SEQUENCE_DICTIONARY=mm10/mm10.dict OUTPUT=mm10/mm10.refFlat
 ```
 
-This creates a refFlat file with only my 2 modifications? Have I formatted my `.gtf` file incorrectly?
+This creates a `.refFlat` file with only my 2 modifications? Have I formatted my `.gtf` file incorrectly?
 
 
-Trying a different utility to create a `.refFlat` file.
+Trying a different utility, `gtfToGenePred`, to create a `.refFlat` file.
 
 This creates a much larger `.refFlat` file. Correct? From UCSC's Kent Utils.
 
