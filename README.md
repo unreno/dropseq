@@ -168,11 +168,10 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 
 
 
-##	Run Drop Seq Wrapper
 
-###	Prepare your dataset
+##	Prepare your dataset
 
-####	Combine fastq files into unaligned bam file
+###	Combine fastq files into unaligned bam file
 
 Drop Seq's script expects an unaligned bam as primary input.
 
@@ -222,7 +221,7 @@ java -jar $PICARD_PATH/picard.jar FastqToSam \
 ```
 
 
-####	Merge sample bam files
+###	Merge sample bam files
 
 If your sample is comprised of multiple pairs of FASTQ files, merge them with ...
 
@@ -251,8 +250,8 @@ java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 
 
 
+##	Run Drop Seq Wrapper
 
-##	Execute
 
 ```BASH
 drop_seq.bash
@@ -303,12 +302,6 @@ drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh --estimated-num-
 
 
 
-
-
-
-
-
-##	Analysis
 
 If your sample or your reference is too small, the output will be small and the following analysis will likely fail due to zero's in the data.
 
