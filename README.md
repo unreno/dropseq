@@ -295,9 +295,14 @@ drop_seq.bash \
 	--genomedir ${PWD}/myRefSTAR \
 	--referencefasta ${PWD}/myRef/myRef.fasta \
 	B3.bam
+```
 
+```BASH
+export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
 
-drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh --estimated-num-cells 20000 --genomedir ${PWD}/mm10STAR --referencefasta ${PWD}/mm10/mm10.fasta B4.bam
+nohup drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh --estimated-num-cells 20000 --genomedir ${PWD}/mm10STAR --referencefasta ${PWD}/mm10/mm10.fasta B3.bam > B3.log &
+
+nohup drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh --estimated-num-cells 20000 --genomedir ${PWD}/mm10STAR --referencefasta ${PWD}/mm10/mm10.fasta B4.bam > B4.log &
 ```
 
 
