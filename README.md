@@ -39,7 +39,7 @@ Newer versions may work, but they have not been tested.
 
 ###	Create required reference `.fasta` file
 
-Perhaps download and combine the fasta.gz files from http://hgdownload.cse.ucsc.edu/goldenpath/mm10/chromosomes/
+Perhaps download and combine the `.fasta.gz` files from http://hgdownload.cse.ucsc.edu/goldenpath/mm10/chromosomes/
 
 Append existing or create a new fasta file with any special sequences for your reference.
 
@@ -50,16 +50,16 @@ ATGGTGAGCAAGGGC ...
 ATCTAGATAACTGAT ...
 ```
 
-###	Create required reference ".gtf" file
+###	Create required reference `.gtf` file
 
-Append existing or create a new ".gtf" file for use by STAR like so ...
+Append existing or create a new `.gtf` file for use by STAR like so ...
 
 ```
 eGFP	AddedGenes	exon	1	720	.	+	0	gene_id "eGFP"; gene_name "eGFP"; transcript_id "eGFP"; transcript_name "eGFP";
 SV40polya	AddedGenes	exon	1	240	.	+	0	gene_id "SV40polya"; gene_name "SV40polya"; transcript_id "SV40polya"; transcript_name "SV40polya";
 ```
 
-Or like so where the tabs have been converted to pipes (JUST for your viewing pleasure. A ".gtf" file is a TAB separated file.)
+Or like so where the tabs have been converted to pipes (JUST for your viewing pleasure. A `.gtf` file is a TAB separated file.)
 
 ```
 eGFP|AddedGenes|exon|1|720|.|+|0|gene_id "eGFP"; gene_name "eGFP"; transcript_id "eGFP"; transcript_name "eGFP";
@@ -67,7 +67,7 @@ SV40polya|AddedGenes|exon|1|240|.|+|0|gene_id "SV40polya"; gene_name "SV40polya"
 ```
 
 
-###	Create required reference ".dict" using Picard's CreateSequenceDictionary
+###	Create required reference `.dict` using Picard's CreateSequenceDictionary
 
 This only takes a few seconds
 
@@ -83,7 +83,7 @@ java -jar $PICARD_PATH/picard.jar CreateSequenceDictionary REFERENCE=mm10/mm10.f
 
 
 
-The ".dict" file should have 1 more line that the number of sequences in the reference ".fasta" file.
+The `.dict` file should have 1 more line that the number of sequences in the reference `.fasta` file.
 
 For example, 
 
@@ -98,7 +98,7 @@ grep -c "^>" mm10.fasta
 
 
 
-###	Create required reference ".refFlat" file
+###	Create required reference `.refFlat` file
 
 Not too long here either.
 
@@ -114,19 +114,19 @@ export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
 $DROP_SEQ_PATH/ConvertToRefFlat ANNOTATIONS_FILE=mm10/mm10.gtf SEQUENCE_DICTIONARY=mm10/mm10.dict OUTPUT=mm10/mm10.refFlat
 ```
 
-This creates a refFlat file with only my 2 modifications? Have I formatted my ".gtf" file incorrectly?
+This creates a refFlat file with only my 2 modifications? Have I formatted my `.gtf` file incorrectly?
 
 
-Trying a different utility to create a ".refFlat" file.
+Trying a different utility to create a `.refFlat` file.
 
-This creates a much larger ".refFlat" file. Correct? From UCSC's Kent Utils.
+This creates a much larger `.refFlat` file. Correct? From UCSC's Kent Utils.
 
 ```BASH
 gtfToGenePred mm10.gtf mm10.refFlat
 ```
 
 
-The ".refFlat" file should have a line for each of the transcript ids in the ".gtf" file.
+The `.refFlat` file should have a line for each of the transcript ids in the `.gtf` file.
 
 For example,
 
