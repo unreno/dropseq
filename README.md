@@ -288,7 +288,7 @@ java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 
 
 Be advised, portions of this pipeline require a GREAT deal of memory.
-If it is unavailable, the script will be killed and crash.
+If it is unavailable, the script will simply be killed and crash.
 
 
 ```BASH
@@ -337,6 +337,10 @@ drop_seq.bash \
 
 ```BASH
 export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
+
+nohup drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
+	--estimated-num-cells 20000 --genomedir ${PWD}/mm10STAR \
+	--referencefasta ${PWD}/mm10/mm10.fasta B3_S1_L001.bam > B3_S1_L001.log &
 
 nohup drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
 	--estimated-num-cells 20000 --genomedir ${PWD}/mm10STAR \
