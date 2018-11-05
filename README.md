@@ -5,18 +5,31 @@ This repository is a collection of scripts for using and analysing Drop Seq data
 It was developed with the following requirements.
 
 * STAR - STAR-2.5.3a.tar.gz  ( https://github.com/alexdobin/STAR/releases )
+  * wget -O STAR-2.5.3a.tar.gz https://github.com/alexdobin/STAR/archive/2.5.3a.tar.gz
 * Picard - picard.jar ( http://broadinstitute.github.io/picard/ )
   * https://github.com/broadinstitute/picard/releases/tag/2.18.15
   * https://github.com/broadinstitute/picard/releases/latest
   * grep Implementation-Version <( unzip -p picard.jar META-INF/MANIFEST.MF )
   * Implementation-Version: 2.18.15-SNAPSHOT
-* Drop\_seq - Drop-seq\_tools-1.13-3.zip ( http://mccarrolllab.com/dropseq/ )
+  * A picard.jar is included in the Drop Seq tools
+* Drop Seq 1.13.3
+  * Drop\_seq - Drop-seq\_tools-1.13-3.zip ( http://mccarrolllab.com/dropseq/ )
+  * wget https://github.com/broadinstitute/Drop-seq/releases/download/v1.13/Drop-seq_tools-1.13.zip
 * R version 3.5.1 (2018-07-02) -- "Feather Spray"
   * source("https://bioconductor.org/biocLite.R")
   * biocLite( c("devtools","Seurat","pryr","gdata","optparse") )
 
 
 Newer versions may work, but they have not been tested.
+
+
+Testing newer versions
+* STAR 2.6.1c
+  * wget -O STAR-2.6.1c.tar.gz https://github.com/alexdobin/STAR/archive/2.6.1c.tar.gz
+* Drop Seq 2.0.0
+  * https://github.com/broadinstitute/Drop-seq/releases
+  * wget https://github.com/broadinstitute/Drop-seq/releases/download/v2.0.0/Drop-seq_tools-2.0.0.zip
+
 
 
 ##	Installation
