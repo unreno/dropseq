@@ -37,11 +37,36 @@ Newer versions may work, but they have not been tested.
 ##	Prepare STAR reference
 
 
+Drop Seq requires a reference set with matching `.fasta`, `.gtf`, `.dict`, `.refFlat` and `STAR` database.
+
+For this example tutorial, we will be using a modified mm10 reference.
+
+
 ###	Create required reference `.fasta` file
 
-Perhaps download and combine the `.fasta.gz` files from http://hgdownload.cse.ucsc.edu/goldenpath/mm10/chromosomes/
 
-Append existing or create a new fasta file with any special sequences for your reference.
+
+
+
+We can start by downloading the complete mm10 reference metadata from NIH.
+
+ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63472/suppl/GSE63472_mm10_reference_metadata.tar.gz
+
+This contains all of the necessary files, except the STAR database itself.
+
+
+You could also get the individual `.fasta.gz` files from http://hgdownload.cse.ucsc.edu/goldenpath/mm10/chromosomes/ and combine them. Of course, this doesn't include the `.gtf` file. The other files could be made from these 2.
+
+
+
+
+https://support.illumina.com/sequencing/sequencing_software/igenome.html
+ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Mus_musculus/UCSC/mm10/Mus_musculus_UCSC_mm10.tar.gz
+
+
+
+If you have any additional sequences you'd like to add to your reference, now is the time.
+Append this existing `.fasta` file with these sequences for your reference.
 
 ```
 >eGFP
@@ -52,14 +77,18 @@ ATCTAGATAACTGAT ...
 
 ###	Create required reference `.gtf` file
 
-Append existing or create a new `.gtf` file for use by STAR like so ...
+
+If you have any additional sequences you'd like to add to your reference, you will also need to add them to your `.gtf` file.
+Append this existing `.gtf` file for use by STAR like so ...
 
 ```
 eGFP	AddedGenes	exon	1	720	.	+	0	gene_id "eGFP"; gene_name "eGFP"; transcript_id "eGFP"; transcript_name "eGFP";
 SV40polya	AddedGenes	exon	1	240	.	+	0	gene_id "SV40polya"; gene_name "SV40polya"; transcript_id "SV40polya"; transcript_name "SV40polya";
 ```
 
-Or like so where the tabs have been converted to pipes (JUST for your viewing pleasure. A `.gtf` file is a TAB separated file.)
+A `.gtf` file is a TAB separated file so edit with caution.
+
+JUST for your viewing pleasure, like so where the TABs have been converted to PIPEs. REMINDER, a `.gtf` file is a TAB separated file. Don't use PIPEs in the actual file.
 
 ```
 eGFP|AddedGenes|exon|1|720|.|+|0|gene_id "eGFP"; gene_name "eGFP"; transcript_id "eGFP"; transcript_name "eGFP";
@@ -70,11 +99,6 @@ SV40polya|AddedGenes|exon|1|240|.|+|0|gene_id "SV40polya"; gene_name "SV40polya"
 ###	Create required reference `.dict` using Picard's CreateSequenceDictionary
 
 This only takes a few seconds
-
-```BASH
-export PICARD_PATH=~/Downloads/
-java -jar $PICARD_PATH/picard.jar CreateSequenceDictionary REFERENCE=myRef/myRef.fasta
-```
 
 ```BASH
 export PICARD_PATH=~/Downloads/
