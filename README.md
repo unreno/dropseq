@@ -158,16 +158,30 @@ $DROP_SEQ_PATH/ConvertToRefFlat ANNOTATIONS_FILE=mm10/mm10.gtf SEQUENCE_DICTIONA
 
 For me, this creates a `.refFlat` file with only my 2 modifications? Have I formatted my `.gtf` file incorrectly?
 
+After some changes, I now get a lot of "GTFReader	Multiple gene IDs for gene".
+
+This is odd as it is using the GSE63472_mm10_reference_metadata.tar.gz reference `.gtf` and `.dict` when trying to recreate the provided `.refFlat`.
 
 
 
 
-However, using the utility `gtfToGenePred` creates a much larger `.refFlat` file.
+However, using the utility `gtfToGenePred` also creates a `.refFlat` file.
 I obtained this program from UCSC's Kent Utils.
+It does require some options and does produce a `.refFlat` with columns in a different order so some post run manipulation is required as well.
+I do find it a bit unacceptable that this gene data format is not standardized.
+
 
 ```BASH
-gtfToGenePred mm10.gtf mm10.refFlat
+gtfToGenePred -genePredExt -geneNameAsName2 -ignoreGroupsWithoutExons  mm10.gtf /dev/stdout | awk 'BEGIN { OFS="\t"} {print $12, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}'
 ```
+
+Of course, you can also manually edit this file to include any of your additions.
+
+```BASH
+SV40polya	SV40polya	SV40polya	+	0	240	240	240	1	0,	240,
+eGFP	eGFP	eGFP	+	0	720	720	720	1	0,	720,
+```
+
 
 The `.refFlat` file should have a line for each of the transcript ids in the `.gtf` file.
 
