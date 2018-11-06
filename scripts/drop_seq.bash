@@ -137,10 +137,12 @@ while [ $# -ne 0 ] ; do
 			exit 2
 		fi
 
+#	2.0.0 does not access this option
+#			-n ${num_cells} \
 		cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
+			-n ${num_cells} \
 			-g ${genomedir} \
 			-r ${referencefasta} \
-			-n ${num_cells} \
 			-o ${bam_base} \
 			${bam_file_with_path}"
 		echo $cmd
