@@ -47,7 +47,6 @@ Testing newer versions
 
 ##	Prepare STAR reference
 
-
 Drop Seq requires a reference set with matching `.fasta`, `.gtf`, `.dict`, `.refFlat` and `STAR` database.
 
 I believe that the 4 reference files must have the same root name. (e.q. mm10.fasta, mm10.gtf, etc.)
@@ -111,6 +110,39 @@ SV40polya|AddedGenes|exon|1|240|.|+|0|gene_id "SV40polya"; gene_name "SV40polya"
 ```
 
 That final column MUST contain the subfields `gene_id`, `gene_name`, `transcript_id`, and `transcript_name`.
+
+
+
+
+
+
+
+
+###	Compare / Check `.fasta` and `.gtf`
+
+
+**The `.fasta` and `.gtf` sequence names MUST, MUST, MUST be consistent.**
+
+`GSE63472_mm10_reference_metadata.tar.gz` IS NOT!
+
+The `.fasta` file includes the "chr" prefix, whilst the `.gtf` does not. Why?
+
+I editted the `.fasta` stripping the "chr" prefix before recreating the `.dict` and `.refFlat` files.
+
+
+
+This isn't the best check, but its something.
+There needs to be some overlap in sequence names between the 2 files.
+In this case there are 24.
+
+```BASH
+grep "^>" mm10c.fasta | sed 's/>//' | sort > mm10c.fasta.sequences
+awk -F"\t" '{print $1}' mm10c.gtf | sort | uniq > mm10c.gtf.sequences
+comm -12 mm10c.fasta.sequences mm10c.gtf.sequences | wc -l
+```
+
+
+
 
 
 ###	Create required reference `.dict` from `.fasta` using Picard's CreateSequenceDictionary
@@ -184,6 +216,8 @@ eGFP	eGFP	eGFP	+	0	720	720	720	1	0,	720,
 
 
 The `.refFlat` file should have a line for each of the transcript ids in the `.gtf` file.
+Minus any removed due to error checks.
+
 
 For example,
 
@@ -198,6 +232,7 @@ sed -e 's/^.*transcript_id "//' -e 's/".*$//' mm10.gtf > mm10.gtf.transcript_ids
 sort mm10.gtf.transcript_ids | uniq | wc -l
 88228
 ```
+
 
 ###	Create actual STAR reference
 
@@ -251,21 +286,28 @@ java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B4_S2_L001_R1_001.fastq.gz \
 	F2=B4_S2_L001_R2_001.fastq.gz \
 	O=B4_S2_L001.bam SM=B4_S2_L001
-
 java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B4_S2_L002_R1_001.fastq.gz \
 	F2=B4_S2_L002_R2_001.fastq.gz \
 	O=B4_S2_L002.bam SM=B4_S2_L002
-
 java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B4_S2_L003_R1_001.fastq.gz \
 	F2=B4_S2_L003_R2_001.fastq.gz \
 	O=B4_S2_L003.bam SM=B4_S2_L003
-
 java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B4_S2_L004_R1_001.fastq.gz \
 	F2=B4_S2_L004_R2_001.fastq.gz \
 	O=B4_S2_L004.bam SM=B4_S2_L004
+
+
+export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
+java -jar $PICARD_PATH/picard.jar FastqToSam \
+
+java -jar picard.jar FastqToSam \
+	F1=$(cygpath -w /cygdrive/c/BaseSpace/Minkyung_1763-56931876/1763_01-78286209/1A_S4_L001_R1_001.fastq.gz ) \
+	F2=$(cygpath -w /cygdrive/c/BaseSpace/Minkyung_1763-56931876/1763_01-78286209/1A_S4_L001_R2_001.fastq.gz ) \
+	SM=B1A_S4_L001 O=B1A_S4_L001.bam
+
 ```
 
 
