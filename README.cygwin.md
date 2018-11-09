@@ -1,6 +1,15 @@
 ## CYGWIN Notes
 
-Apparently, this was not designed to run on Cygwin
+Apparently, this was not designed to run on Cygwin.
+
+I have had to modify several system files and the STAR source to get it to compile.
+
+The Drop Seq script all required `cygpath` modifications.
+
+Several of the R packages just don't.
+
+
+
 
 ###	Compiling STAR on cygwin
 

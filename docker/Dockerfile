@@ -23,8 +23,9 @@ RUN apt-get update \
 
 
 ENV STAR_VERSION 2.5.3a
+ENV STAR_URL "https://github.com/alexdobin/STAR/archive"
 RUN cd ~ \
-	&& wget -O STAR-${STAR_VERSION}.tar.gz https://github.com/alexdobin/STAR/archive/${STAR_VERSION}.tar.gz \
+	&& wget -O STAR-${STAR_VERSION}.tar.gz ${STAR_URL}/${STAR_VERSION}.tar.gz \
 	&& tar xfvz STAR-${STAR_VERSION}.tar.gz \
 	&& cp STAR-${STAR_VERSION}/bin/Linux_x86_64/STAR /usr/local/bin/ \
 	&& cd ~ \
@@ -32,9 +33,10 @@ RUN cd ~ \
 	&& which STAR
 
 
-ENV DROP_SEQ_VERSION=1.13
+ENV DROP_SEQ_VERSION 1.13
+ENV DROP_SEQ_URL "https://github.com/broadinstitute/Drop-seq/releases/download"
 RUN cd ~ \
-	&& wget https://github.com/broadinstitute/Drop-seq/releases/download/v${DROP_SEQ_VERSION}/Drop-seq_tools-${DROP_SEQ_VERSION}.zip \
+	&& wget ${DROP_SEQ_URL}/v${DROP_SEQ_VERSION}/Drop-seq_tools-${DROP_SEQ_VERSION}.zip \
 	&& unzip Drop-seq_tools-${DROP_SEQ_VERSION}.zip \
 	&& /bin/rm -rf Drop-seq_tools-${DROP_SEQ_VERSION}.zip
 
@@ -52,7 +54,18 @@ RUN wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63472/suppl/GSE63472_
 	&& /bin/rm -rf GSE63472_mm10_reference_metadata.tar.gz \
 	&& sed -i 's/^>chr/>/' mm10/mm10.fasta
 
-RUN STAR --genomeFastaFiles mm10/mm10.fasta --runMode genomeGenerate --genomeDir $HOME/mm10STAR --sjdbGTFfile mm10/mm10.gtf
+#RUN pwd && ls -l && echo $HOME && df -h . && mkdir $HOME/mm10STAR && ls -l && ls -l mm10/mm10.fasta && ls -l mm10/mm10.gtf \
+#	&& STAR --genomeFastaFiles mm10/mm10.fasta --runMode genomeGenerate --genomeDir $HOME/mm10STAR --sjdbGTFfile mm10/mm10.gtf
+
+
+#
+#	This will require LOTS of memory. Perhaps at a memory check?
+#
+#	Trying 16 GB / 3 GB SWAP - Nope
+#
+#RUN mkdir $HOME/mm10STAR \
+#	&& STAR --genomeFastaFiles mm10/mm10.fasta --runMode genomeGenerate \
+#		--genomeDir $HOME/mm10STAR --sjdbGTFfile mm10/mm10.gtf --runThreadN 4
 
 
 
@@ -81,6 +94,14 @@ RUN cd ~ \
 #	How many threads will it use?
 #	How to pass it a param? a file?
 #	How to get output out to the hosting system?
+#
+#	Additional connection to running container
+#		docker exec -it CONTAINER_ID bash
+#
+#	To increase resources, need to modify Daemon GUI settings.
+#
+#	Monitor
+#		docker stats
 #
 #	Delete ALL container
 #		docker rm $( docker ps -qa )

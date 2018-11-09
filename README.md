@@ -409,19 +409,3 @@ nohup drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
 
 
 
-
-If your sample or your reference is too small, the output will be small and the following analysis will likely fail due to zero's in the data.
-
-
-```BASH
-R
-```
-
-Run in two steps because R is bad at memory management.
-
-```BASH
-create_seurat.R
-
-seurat.R --redo
-```
-
