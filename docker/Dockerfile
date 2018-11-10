@@ -138,5 +138,9 @@ RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R
 #	Run command, should produce output in the /shared directory?
 #	(can't use environment variables like $HOME or ~ as they are interpretted locally before docker)
 #
-#		docker run -v ~/4docker:/shared --rm dropseq2 drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1A.bam
+#	The output of this script is created in the directory from where it was executed so you NEED to cd ...
+#
+#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1A.bam > B1A.log"
+#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1B.bam > B1B.log"
+#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1.bam > B1.log"
 #
