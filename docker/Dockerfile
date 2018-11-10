@@ -22,6 +22,15 @@ RUN apt-get update \
 #	using wget in RUN rather that ADD and then RUN does save a tiny bit of size on the final image.
 
 
+RUN cd ~ \
+	&& git clone https://github.com/unreno/dropseq \
+	&& cd dropseq \
+	&& ln -s Makefile.example Makefile \
+	&& make BASE_DIR="/usr/local" install \
+	&& cd ~ \
+	&& /bin/rm -rf dropseq
+
+
 ENV STAR_VERSION 2.5.3a
 ENV STAR_URL "https://github.com/alexdobin/STAR/archive"
 RUN cd ~ \
@@ -54,12 +63,17 @@ RUN wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63472/suppl/GSE63472_
 	&& /bin/rm -rf GSE63472_mm10_reference_metadata.tar.gz \
 	&& sed -i 's/^>chr/>/' mm10/mm10.fasta
 
-#RUN pwd && ls -l && echo $HOME && df -h . && mkdir $HOME/mm10STAR && ls -l && ls -l mm10/mm10.fasta && ls -l mm10/mm10.gtf \
-#	&& STAR --genomeFastaFiles mm10/mm10.fasta --runMode genomeGenerate --genomeDir $HOME/mm10STAR --sjdbGTFfile mm10/mm10.gtf
+
+
+RUN cat ~/dropseq/misc/*dict >> mm10/mm10.dict \
+	&& cat ~/dropseq/misc/*fasta >> mm10/mm10.fasta \
+	&& cat ~/dropseq/misc/*gtf >> mm10/mm10.gtf \
+	&& cat ~/dropseq/misc/*refFlat >> mm10/mm10.refFlat
+
 
 
 #
-#	This will require LOTS of memory. Perhaps at a memory check?
+#	This will require LOTS of memory. Perhaps at a memory check? About 20GB for mm10
 #
 #	Trying 16 GB / 3 GB SWAP - Nope
 #
@@ -71,14 +85,6 @@ RUN mkdir $HOME/mm10STAR \
 
 #	java?
 
-
-RUN cd ~ \
-	&& git clone https://github.com/unreno/dropseq \
-	&& cd dropseq \
-	&& ln -s Makefile.example Makefile \
-	&& make BASE_DIR="/usr/local" install \
-	&& cd ~ \
-	&& /bin/rm -rf dropseq
 
 
 #	write prepare_R_environment.Rscript or something 
@@ -99,6 +105,17 @@ RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R
 #		docker exec -it CONTAINER_ID bash
 #
 #	To increase resources, need to modify Daemon GUI settings.
+#
+#
+#
+#	Run docker without sudo
+#		Create docker group (may exist already)
+#			sudo groupadd docker
+#		Add user to docker group
+#			sudo usermod -aG docker $USER
+#		Logout / Login
+#			exit
+#			ssh herv
 #
 #	Monitor
 #		docker stats
