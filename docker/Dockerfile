@@ -68,9 +68,13 @@ RUN wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63472/suppl/GSE63472_
 
 
 RUN cat ~/dropseq/misc/*dict >> mm10/mm10.dict \
+	&& tail mm10/mm10.dict \
 	&& cat ~/dropseq/misc/*fasta >> mm10/mm10.fasta \
+	&& tail mm10/mm10.fasta \
 	&& cat ~/dropseq/misc/*gtf >> mm10/mm10.gtf \
+	&& tail mm10/mm10.gtf \
 	&& cat ~/dropseq/misc/*refFlat >> mm10/mm10.refFlat \
+	&& tail mm10/mm10.refFlat \
 	&& chmod 444 mm10/*
 
 
