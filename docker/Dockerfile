@@ -140,7 +140,22 @@ RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R
 #
 #	The output of this script is created in the directory from where it was executed so you NEED to cd ...
 #
-#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1A.bam > B1A.log"
-#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1B.bam > B1B.log"
-#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1.bam > B1.log"
+#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B1A.bam > B1A.log"
+#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B1B.bam > B1B.log"
+#		docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B1.bam > B1.log"
 #
+#	Run docker in nohup background and tail the log locally
+#
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B1A.bam > B1A.log 2>&1" & tail --retry -f ~/4docker/B1A.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B1B.bam > B1B.log 2>&1" & tail --retry -f ~/4docker/B1B.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B1.bam > B1.log 2>&1" & tail --retry -f ~/4docker/B1.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B2A.bam > B2A.log 2>&1" & tail --retry -f ~/4docker/B2A.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B2B.bam > B2B.log 2>&1" & tail --retry -f ~/4docker/B2B.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B2.bam > B2.log 2>&1" & tail --retry -f ~/4docker/B2.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B3.bam > B3.log 2>&1" & tail --retry -f ~/4docker/B3.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B4.bam > B4.log 2>&1" & tail --retry -f ~/4docker/B4.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B6.bam > B6.log 2>&1" & tail --retry -f ~/4docker/B6.log
+#		nohup docker run -v ~/4docker:/shared --rm dropseq bash -c "cd /shared ; drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta B7.bam > B7.log 2>&1" & tail --retry -f ~/4docker/B7.log
+#
+#
+
