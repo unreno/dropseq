@@ -63,9 +63,9 @@ RUN wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63472/suppl/GSE63472_
 #
 #	Trying 16 GB / 3 GB SWAP - Nope
 #
-#RUN mkdir $HOME/mm10STAR \
-#	&& STAR --genomeFastaFiles mm10/mm10.fasta --runMode genomeGenerate \
-#		--genomeDir $HOME/mm10STAR --sjdbGTFfile mm10/mm10.gtf --runThreadN 4
+RUN mkdir $HOME/mm10STAR \
+	&& STAR --genomeFastaFiles mm10/mm10.fasta --runMode genomeGenerate \
+		--genomeDir $HOME/mm10STAR --sjdbGTFfile mm10/mm10.gtf --runThreadN 40
 
 
 
@@ -83,7 +83,7 @@ RUN cd ~ \
 
 #	write prepare_R_environment.Rscript or something 
 
-#RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R');biocLite( c('devtools','Seurat','pryr','gdata','optparse') );" | R --no-save
+RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R');biocLite( c('devtools','Seurat','pryr','gdata','optparse') );" | R --no-save
 
 
 #	Create with ...
