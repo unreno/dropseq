@@ -5,13 +5,13 @@ FROM ubuntu
 
 
 #ENV HOME /root
-#	stop complaints like 
-#	debconf: (Can't locate Term/ReadLine.pm 
+#	stop complaints like
+#	debconf: (Can't locate Term/ReadLine.pm
 #	with ...
 ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /root
- 
+
 RUN apt-get update \
 	&& apt-get install -y apt-utils dialog bzip2 gcc gawk \
 		zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev make \
@@ -27,7 +27,7 @@ RUN cd ~ \
 	&& git clone https://github.com/unreno/dropseq \
 	&& cd dropseq \
 	&& ln -s Makefile.example Makefile \
-	&& make BASE_DIR="/usr/local" install 
+	&& make BASE_DIR="/usr/local" install
 # \
 #	&& cd ~ \
 #	&& /bin/rm -rf dropseq
@@ -40,7 +40,7 @@ RUN cd ~ \
 	&& tar xfvz STAR-${STAR_VERSION}.tar.gz \
 	&& cp STAR-${STAR_VERSION}/bin/Linux_x86_64/STAR /usr/local/bin/ \
 	&& cd ~ \
-	&& /bin/rm -rf STAR-${STAR_VERSION}.tar.gz STAR-${STAR_VERSION} 
+	&& /bin/rm -rf STAR-${STAR_VERSION}.tar.gz STAR-${STAR_VERSION}
 #\
 #	&& which STAR
 
@@ -95,7 +95,7 @@ RUN mkdir $HOME/mm10STAR \
 
 
 
-#	write prepare_R_environment.Rscript or something 
+#	write prepare_R_environment.Rscript or something
 
 RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R');biocLite( c('devtools','Seurat','pryr','gdata','optparse') );" | R --no-save
 
@@ -134,4 +134,8 @@ RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R
 #	Delete ALL images
 #		docker rmi $( docker images -q )
 #
-#	docker run -v ~/4docker:/shared --rm dropseq2 drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1A.bam
+#	Prepare a directory to share with docker called ~/4docker, shared as /shared/ on
+#	Run command, should produce output in the /shared directory?
+#
+#		docker run -v ~/4docker:/shared --rm dropseq2 drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1A.bam
+#
