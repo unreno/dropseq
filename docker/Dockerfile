@@ -17,6 +17,7 @@ RUN apt-get update \
 		zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev make \
 		libssl-dev libncurses5-dev zip g++ git libtbb-dev wget \
 		r-base r-base-dev libhdf5-dev \
+		openjdk-8-jdk \
 	&& apt-get clean
 
 #	using wget in RUN rather that ADD and then RUN does save a tiny bit of size on the final image.
@@ -133,3 +134,4 @@ RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R
 #	Delete ALL images
 #		docker rmi $( docker images -q )
 #
+#	docker run -v ~/4docker:/shared --rm dropseq2 drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1A.bam
