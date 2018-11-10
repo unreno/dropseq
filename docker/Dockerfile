@@ -63,14 +63,15 @@ RUN cd ~ \
 RUN wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63472/suppl/GSE63472_mm10_reference_metadata.tar.gz \
 	&& tar xvfz GSE63472_mm10_reference_metadata.tar.gz \
 	&& /bin/rm -rf GSE63472_mm10_reference_metadata.tar.gz \
+	&& chmod a+w mm10/* \
 	&& sed -i 's/^>chr/>/' mm10/mm10.fasta
-
 
 
 RUN cat ~/dropseq/misc/*dict >> mm10/mm10.dict \
 	&& cat ~/dropseq/misc/*fasta >> mm10/mm10.fasta \
 	&& cat ~/dropseq/misc/*gtf >> mm10/mm10.gtf \
-	&& cat ~/dropseq/misc/*refFlat >> mm10/mm10.refFlat
+	&& cat ~/dropseq/misc/*refFlat >> mm10/mm10.refFlat \
+	&& chmod 444 mm10/*
 
 
 
