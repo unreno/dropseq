@@ -128,7 +128,7 @@ RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R
 #	Monitor
 #		docker stats
 #
-#	Delete ALL container
+#	Delete ALL containers
 #		docker rm $( docker ps -qa )
 #
 #	Delete ALL images
