@@ -136,6 +136,7 @@ RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R
 #
 #	Prepare a directory to share with docker called ~/4docker, shared as /shared/ on
 #	Run command, should produce output in the /shared directory?
+#	(can't use environment variables like $HOME or ~ as they are interpretted locally before docker)
 #
 #		docker run -v ~/4docker:/shared --rm dropseq2 drop_seq.bash --drop_seq /root/Drop-seq_tools-1.13 --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta /shared/B1A.bam
 #
