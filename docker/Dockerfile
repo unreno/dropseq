@@ -26,9 +26,10 @@ RUN cd ~ \
 	&& git clone https://github.com/unreno/dropseq \
 	&& cd dropseq \
 	&& ln -s Makefile.example Makefile \
-	&& make BASE_DIR="/usr/local" install \
-	&& cd ~ \
-	&& /bin/rm -rf dropseq
+	&& make BASE_DIR="/usr/local" install 
+# \
+#	&& cd ~ \
+#	&& /bin/rm -rf dropseq
 
 
 ENV STAR_VERSION 2.5.3a
@@ -38,8 +39,9 @@ RUN cd ~ \
 	&& tar xfvz STAR-${STAR_VERSION}.tar.gz \
 	&& cp STAR-${STAR_VERSION}/bin/Linux_x86_64/STAR /usr/local/bin/ \
 	&& cd ~ \
-	&& /bin/rm -rf STAR-${STAR_VERSION}.tar.gz STAR-${STAR_VERSION} \
-	&& which STAR
+	&& /bin/rm -rf STAR-${STAR_VERSION}.tar.gz STAR-${STAR_VERSION} 
+#\
+#	&& which STAR
 
 
 ENV DROP_SEQ_VERSION 1.13
