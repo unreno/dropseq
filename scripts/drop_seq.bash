@@ -137,14 +137,24 @@ while [ $# -ne 0 ] ; do
 			exit 2
 		fi
 
-#	2.0.0 does not access this option
-#			-n ${num_cells} \
-		cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
-			-n ${num_cells} \
-			-g ${genomedir} \
-			-r ${referencefasta} \
-			-o ${bam_base} \
-			${bam_file_with_path}"
+
+		if [ "${DROP_SEQ_VERSION}" -eq "2.0.0" ] ; then
+			#	2.0.0 does not access this option
+			#			-n ${num_cells} \
+			cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
+				-g ${genomedir} \
+				-r ${referencefasta} \
+				-o ${bam_base} \
+				${bam_file_with_path}"
+		else
+			#	Assuming version 1.13
+			cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
+				-n ${num_cells} \
+				-g ${genomedir} \
+				-r ${referencefasta} \
+				-o ${bam_base} \
+				${bam_file_with_path}"
+		fi
 		echo $cmd
 		$cmd
 
