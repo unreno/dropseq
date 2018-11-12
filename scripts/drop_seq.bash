@@ -139,7 +139,7 @@ while [ $# -ne 0 ] ; do
 
 
 		if [ "${DROP_SEQ_VERSION}" == "2.0.0" ] ; then
-			#	2.0.0 does not access this option
+			#	2.0.0 no longer accepts this option
 			#			-n ${num_cells} \
 			cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
 				-g ${genomedir} \
