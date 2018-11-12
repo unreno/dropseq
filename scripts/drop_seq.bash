@@ -147,6 +147,12 @@ while [ $# -ne 0 ] ; do
 				-r ${referencefasta} \
 				-o ${bam_base} \
 				${bam_file_with_path}"
+			echo $cmd
+			$cmd
+
+			mv ${bam_base}/final.bam ${bam_base}/error_detected.bam
+			mv ${bam_base}/final.bai ${bam_base}/error_detected.bai
+
 		else
 			#	Assuming version 1.13
 			cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
@@ -155,9 +161,9 @@ while [ $# -ne 0 ] ; do
 				-r ${referencefasta} \
 				-o ${bam_base} \
 				${bam_file_with_path}"
+			echo $cmd
+			$cmd
 		fi
-		echo $cmd
-		$cmd
 
 	fi
 
