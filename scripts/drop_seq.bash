@@ -138,7 +138,7 @@ while [ $# -ne 0 ] ; do
 		fi
 
 
-		if [ "${DROP_SEQ_VERSION}" -eq "2.0.0" ] ; then
+		if [ "${DROP_SEQ_VERSION}" == "2.0.0" ] ; then
 			#	2.0.0 does not access this option
 			#			-n ${num_cells} \
 			cmd="${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
