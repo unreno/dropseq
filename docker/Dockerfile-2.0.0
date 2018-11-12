@@ -17,7 +17,7 @@ RUN apt-get update \
 		zlib1g-dev libbz2-dev liblzma-dev libcurl4-openssl-dev make \
 		libssl-dev libncurses5-dev zip g++ git libtbb-dev wget \
 		r-base r-base-dev libhdf5-dev \
-		openjdk-8-jdk \
+		openjdk-8-jdk vim \
 	&& apt-get clean
 
 #	using wget in RUN rather that ADD and then RUN does save a tiny bit of size on the final image.
