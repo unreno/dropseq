@@ -97,8 +97,9 @@ while [ $# -ne 0 ] ; do
 	echo "Processing :${1}:"
 
 	bam_file_with_path=$1
-	bam_base=${bam_file_with_path%%.*}
-	bam_base=${bam_base##*/}
+#	bam_base=${bam_file_with_path%%.*}
+#	bam_base=${bam_base##*/}
+	bam_base=$( basename $1 .bam )
 	mkdir -p "${bam_base}"
 
 	#	prototype script for AWS AMI so many hard coded values
