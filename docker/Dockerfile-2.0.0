@@ -51,7 +51,8 @@ RUN cd ~ \
 	&& wget ${DROP_SEQ_URL}/v${DROP_SEQ_VERSION}/Drop-seq_tools-${DROP_SEQ_VERSION}.zip \
 	&& unzip Drop-seq_tools-${DROP_SEQ_VERSION}.zip \
 	&& /bin/rm -rf Drop-seq_tools-${DROP_SEQ_VERSION}.zip \
-	&& ln -s Drop-seq_tools-${DROP_SEQ_VERSION} Drop-seq_tools
+	&& ln -s Drop-seq_tools-${DROP_SEQ_VERSION} Drop-seq_tools \
+	&& sed -i 's/\$\"files_to_delete/\"\$files_to_delete/g' Drop-seq_tools/Drop-seq_alignment.sh
 
 
 
