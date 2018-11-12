@@ -52,7 +52,8 @@ RUN cd ~ \
 	&& unzip Drop-seq_tools-${DROP_SEQ_VERSION}.zip \
 	&& /bin/rm -rf Drop-seq_tools-${DROP_SEQ_VERSION}.zip \
 	&& ln -s Drop-seq_tools-${DROP_SEQ_VERSION} Drop-seq_tools \
-	&& sed -i 's/\$\"files_to_delete/\"\$files_to_delete/g' Drop-seq_tools/Drop-seq_alignment.sh
+	&& sed -i 's/\$\"files_to_delete/\"\$files_to_delete/g' Drop-seq_tools/Drop-seq_alignment.sh \
+	&& sed -i 's/\$tmpdir\/\${tagged_unmapped_bam}/\${tagged_unmapped_bam}/' Drop-seq_tools/Drop-seq_alignment.sh
 
 
 
