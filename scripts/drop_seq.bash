@@ -150,6 +150,7 @@ while [ $# -ne 0 ] ; do
 			echo $cmd
 			$cmd
 
+			#	This is done simply to retain the naming conventions of 1.13
 			mv ${bam_base}/final.bam ${bam_base}/error_detected.bam
 			mv ${bam_base}/final.bai ${bam_base}/error_detected.bai
 
@@ -195,6 +196,7 @@ while [ $# -ne 0 ] ; do
 				OUTPUT=out_cell_readcounts.txt.gz \
 				TAG=XC"
 		else
+			#	Assuming version 1.13
 			cmd="${DROP_SEQ_PATH}/BAMTagHistogram \
 				INPUT=error_detected.bam \
 				OUTPUT=out_cell_readcounts.txt.gz \
