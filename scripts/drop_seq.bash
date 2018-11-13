@@ -176,6 +176,8 @@ while [ $# -ne 0 ] ; do
 
 
 	cd "${bam_base}"
+	echo $PWD
+	ls -trail
 
 
 	echo "Running BAMTagHistogram."
@@ -186,10 +188,18 @@ while [ $# -ne 0 ] ; do
 
 	else
 
-		cmd="${DROP_SEQ_PATH}/BAMTagHistogram \
-			INPUT=error_detected.bam \
-			OUTPUT=out_cell_readcounts.txt.gz \
-			TAG=XC"
+		if [ "${DROP_SEQ_VERSION}" == "2.0.0" ] ; then
+			#	SERIOUSLY! BAM to Bam. I don't even think that Linux would let me link that. Rename during install?
+			cmd="${DROP_SEQ_PATH}/BamTagHistogram \
+				INPUT=error_detected.bam \
+				OUTPUT=out_cell_readcounts.txt.gz \
+				TAG=XC"
+		else
+			cmd="${DROP_SEQ_PATH}/BAMTagHistogram \
+				INPUT=error_detected.bam \
+				OUTPUT=out_cell_readcounts.txt.gz \
+				TAG=XC"
+		fi
 		echo $cmd
 		$cmd
 
