@@ -252,6 +252,40 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 
 
 
+
+
+
+##	Docker Image
+
+The following docker image will create the above an image with STAR 2.5.3a, Drop Seq tools 1.13 and a modified mm10 reference.
+
+Be advised, building this image will take a machine with at least 20GB of memory to make the STAR reference.
+
+
+```BASH
+mkdir tmp; cd tmp
+wget https://github.com/unreno/dropseq/blob/master/docker/Dockerfile-1.13
+docker build -t dropseq1 -f Dockerfile-1.13 .
+docker run -ti dropseq1
+```
+
+Of course, you can do this whereever and call the image whatever you like.
+
+An image with STAR 2.6.2c and Drop Seq tools 2.0.0 is also available.
+
+```BASH
+mkdir tmp; cd tmp
+wget https://github.com/unreno/dropseq/blob/master/docker/Dockerfile-2.0.0
+docker build -t dropseq2 -f Dockerfile-2.0.0 .
+docker run -ti dropseq2
+```
+
+
+
+
+
+
+
 ##	Prepare your dataset
 
 ###	Combine fastq files into unaligned bam file
@@ -407,5 +441,19 @@ nohup drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
 	--referencefasta ${PWD}/mm10/mm10.fasta B4.bam > B4.log &
 ```
 
+
+##	Run Drop Seq on docker image
+
+
+Create a directory to share with the docker image, place you sample bam in it and execute the docker image.
+
+```BASH
+mkdir ~/local_to_share
+cp SAMPLE.bam ~/local_to_share
+
+docker run -v ~/local_to_share:/shared --rm dropseq1 bash -c "cd /shared/; drop_seq.bash --drop_seq /root/Drop-seq_tools --genomedir /root/mm10STAR --referencefasta /root/mm10/mm10.fasta SAMPLE.bam > SAMPLE.log 2>&1"
+
+tail --retry -f ~/local_to_share/SAMPLE.log
+```
 
 
