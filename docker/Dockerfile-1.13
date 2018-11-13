@@ -98,6 +98,8 @@ RUN echo "update.packages(ask=FALSE);source('https://bioconductor.org/biocLite.R
 
 #	Create with ...
 #
+#		mkdir tmp; cd tmp
+#		wget https://github.com/unreno/dropseq/blob/master/docker/Dockerfile-1.13
 #		docker build -t dropseq1 -f Dockerfile-1.13 .
 #		docker run -ti dropseq1
 #
