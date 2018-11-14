@@ -4,16 +4,16 @@ This repository is a collection of scripts for using and analysing Drop Seq data
 
 It was developed with the following requirements.
 
-* STAR - STAR-2.5.3a.tar.gz  ( https://github.com/alexdobin/STAR/releases )
+* STAR - STAR-2.5.3a.tar.gz ( https://github.com/alexdobin/STAR/releases )
   * wget -O STAR-2.5.3a.tar.gz https://github.com/alexdobin/STAR/archive/2.5.3a.tar.gz
 * Picard - picard.jar ( http://broadinstitute.github.io/picard/ )
   * https://github.com/broadinstitute/picard/releases/tag/2.18.15
   * https://github.com/broadinstitute/picard/releases/latest
   * grep Implementation-Version <( unzip -p picard.jar META-INF/MANIFEST.MF )
   * Implementation-Version: 2.18.15-SNAPSHOT
-  * A picard.jar is included in the Drop Seq tools
-* Drop Seq 1.13.3
-  * Drop\_seq - Drop-seq\_tools-1.13-3.zip ( http://mccarrolllab.com/dropseq/ )
+  * Hosever, a version of picard.jar is included in the Drop Seq tools
+* Drop Seq 1.13
+  * Drop\_seq - Drop-seq\_tools-1.13.zip ( http://mccarrolllab.com/dropseq/ )
   * wget https://github.com/broadinstitute/Drop-seq/releases/download/v1.13/Drop-seq_tools-1.13.zip
 * R version 3.5.1 (2018-07-02) -- "Feather Spray"
   * source("https://bioconductor.org/biocLite.R")
@@ -23,7 +23,8 @@ It was developed with the following requirements.
 Newer versions may work, but they have not been tested.
 
 
-Testing newer versions
+Testing with newer versions ...
+
 * STAR 2.6.1c
   * wget -O STAR-2.6.1c.tar.gz https://github.com/alexdobin/STAR/archive/2.6.1c.tar.gz
 * Drop Seq 2.0.0
@@ -152,7 +153,7 @@ This only takes a few seconds to generate.
 If you haven't modified the reference `.fasta`, this is unnecessary.
 
 ```BASH
-export PICARD_PATH=~/Downloads/
+export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar CreateSequenceDictionary REFERENCE=mm10/mm10.fasta
 ```
 
@@ -192,7 +193,7 @@ For me, this creates a `.refFlat` file with only my 2 modifications? Have I form
 
 After some changes, I now get a lot of "GTFReader	Multiple gene IDs for gene".
 
-This is odd as it is using the GSE63472_mm10_reference_metadata.tar.gz reference `.gtf` and `.dict` when trying to recreate the provided `.refFlat`.
+This is odd as it is using the `GSE63472_mm10_reference_metadata.tar.gz` reference `.gtf` and `.dict` when trying to recreate the provided `.refFlat`.
 
 
 
@@ -204,7 +205,7 @@ I do find it a bit unacceptable that this gene data format is not standardized.
 
 
 ```BASH
-gtfToGenePred -genePredExt -geneNameAsName2 -ignoreGroupsWithoutExons  mm10.gtf /dev/stdout | awk 'BEGIN { OFS="\t"} {print $12, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}'
+gtfToGenePred -genePredExt -geneNameAsName2 -ignoreGroupsWithoutExons mm10.gtf /dev/stdout | awk 'BEGIN { OFS="\t"} {print $12, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}'
 ```
 
 Of course, you can also manually edit this file to include any of your additions.
@@ -255,7 +256,7 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 
 
 
-##	Docker Image
+##	Use a Docker Image instead
 
 The following docker image will create the above an image with STAR 2.5.3a, Drop Seq tools 1.13 and a modified mm10 reference.
 
@@ -266,7 +267,7 @@ Be advised, building this image will take a machine with at least 20GB of memory
 mkdir tmp; cd tmp
 wget https://github.com/unreno/dropseq/blob/master/docker/Dockerfile-1.13
 docker build -t dropseq1 -f Dockerfile-1.13 .
-docker run -ti dropseq1
+docker run -it dropseq1
 ```
 
 Of course, you can do this whereever and call the image whatever you like.
@@ -277,7 +278,7 @@ An image with STAR 2.6.2c and Drop Seq tools 2.0.0 is also available.
 mkdir tmp; cd tmp
 wget https://github.com/unreno/dropseq/blob/master/docker/Dockerfile-2.0.0
 docker build -t dropseq2 -f Dockerfile-2.0.0 .
-docker run -ti dropseq2
+docker run -it dropseq2
 ```
 
 
@@ -293,7 +294,7 @@ docker run -ti dropseq2
 Drop Seq's script expects an unaligned bam as primary input.
 
 ```BASH
-export PICARD_PATH=~/Downloads/
+export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B3_S1_L001_R1_001.fastq.gz \
 	F2=B3_S1_L001_R2_001.fastq.gz \
@@ -315,7 +316,7 @@ java -jar $PICARD_PATH/picard.jar FastqToSam \
 	O=B3_S1_L004.bam SM=B3_S1_L004
 
 
-export PICARD_PATH=~/Downloads/
+export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B4_S2_L001_R1_001.fastq.gz \
 	F2=B4_S2_L001_R2_001.fastq.gz \
@@ -350,7 +351,7 @@ java -jar picard.jar FastqToSam \
 If your sample is comprised of multiple pairs of FASTQ files, merge them with ...
 
 ```BASH
-export PICARD_PATH=~/Downloads/
+export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	INPUT=B3_S1_L001.bam \
 	INPUT=B3_S1_L002.bam \
@@ -361,7 +362,7 @@ java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	OUTPUT=B3.bam
 
 
-export PICARD_PATH=~/Downloads/
+export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	INPUT=B4_S2_L001.bam \
 	INPUT=B4_S2_L002.bam \
@@ -456,4 +457,9 @@ docker run -v ~/local_to_share:/shared --rm dropseq1 bash -c "cd /shared/; drop_
 tail --retry -f ~/local_to_share/SAMPLE.log
 ```
 
+Of course, you could just start a docker container and be more interactive.
+
+```BASH
+docker run -it dropseq1
+```
 
