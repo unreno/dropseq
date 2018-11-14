@@ -258,9 +258,9 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 
 ##	Use a Docker Image instead
 
-The following docker image will create the above an image with STAR 2.5.3a, Drop Seq tools 1.13 and a modified mm10 reference.
+The following will create the above as a docker image with STAR 2.5.3a, Drop Seq tools 1.13 and a modified mm10 reference.
 
-Be advised, building this image will take a machine with at least 20GB of memory to make the STAR reference.
+Be advised, building this image will take a couple hours and a machine with at least 20GB of memory to make the STAR reference.
 
 
 ```BASH
@@ -272,7 +272,7 @@ docker run -it dropseq1
 
 Of course, you can do this whereever and call the image whatever you like.
 
-An image with STAR 2.6.2c and Drop Seq tools 2.0.0 is also available.
+An docker file to create an image with STAR 2.6.1c and Drop Seq tools 2.0.0 is also available.
 
 ```BASH
 mkdir tmp; cd tmp
