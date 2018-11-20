@@ -140,6 +140,7 @@ In this case there are 24.
 grep "^>" mm10c.fasta | sed 's/>//' | sort > mm10c.fasta.sequences
 awk -F"\t" '{print $1}' mm10c.gtf | sort | uniq > mm10c.gtf.sequences
 comm -12 mm10c.fasta.sequences mm10c.gtf.sequences | wc -l
+24
 ```
 
 
@@ -153,7 +154,8 @@ This only takes a few seconds to generate.
 If you haven't modified the reference `.fasta`, this is unnecessary.
 
 ```BASH
-export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
+export DROP_SEQ_PATH=~/Drop-seq_tools-1.13
+export PICARD_PATH=${DROP_SEQ_PATH}/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar CreateSequenceDictionary REFERENCE=mm10/mm10.fasta
 ```
 
@@ -183,22 +185,19 @@ Not too long to create here either.
 Using Drop Seq tools' `ConvertToRefFlat`
 
 ```BASH
-export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
+export DROP_SEQ_PATH=~/Drop-seq_tools-1.13
 $DROP_SEQ_PATH/ConvertToRefFlat ANNOTATIONS_FILE=mm10/mm10.gtf SEQUENCE_DICTIONARY=mm10/mm10.dict OUTPUT=mm10/mm10.refFlat
 ```
 
 
 
-For me, this creates a `.refFlat` file with only my 2 modifications? Have I formatted my `.gtf` file incorrectly?
-
-After some changes, I now get a lot of "GTFReader	Multiple gene IDs for gene".
+I get a lot of "GTFReader	Multiple gene IDs for gene".
 
 This is odd as it is using the `GSE63472_mm10_reference_metadata.tar.gz` reference `.gtf` and `.dict` when trying to recreate the provided `.refFlat`.
 
 
 
-
-However, using the utility `gtfToGenePred` also creates a `.refFlat` file.
+Alternately, the utility `gtfToGenePred` also creates a `.refFlat` file.
 I obtained this program from UCSC's Kent Utils.
 It does require some options and does produce a `.refFlat` with columns in a different order so some post run manipulation is required as well.
 I do find it a bit unacceptable that this gene data format is not standardized.
@@ -249,7 +248,7 @@ STAR --genomeFastaFiles mm10/mm10.fasta --runMode genomeGenerate --genomeDir $PW
 
 Note:
 
-If the reference fasta is small, or if you are getting seg faults during the alignment, you may wish to recreate the index with a lower the value for option `--genomeSAindexNbases`. Its default is 14, so try 5 or something. My index only had 2 sequences in it and this fixed it for me.
+If the reference fasta is small, or if you are getting seg faults during the alignment, you may wish to recreate the index with a lower the value for option `--genomeSAindexNbases`. Its default is 14, so try 5 or something. On a previous run, my index only had 2 sequences in it and this fixed it for me.
 
 
 
@@ -260,7 +259,7 @@ If the reference fasta is small, or if you are getting seg faults during the ali
 
 The following will create the above as a docker image with STAR 2.5.3a, Drop Seq tools 1.13 and a modified mm10 reference.
 
-Be advised, building this image will take a couple hours and a machine with at least 20GB of memory to make the STAR reference.
+Be advised, building this image will take a couple hours and require a machine with at least 20GB of memory to make the STAR reference.
 
 
 ```BASH
@@ -291,10 +290,13 @@ docker run -it dropseq2
 
 ###	Combine fastq files into unaligned bam file
 
-Drop Seq's script expects an unaligned bam as primary input.
+Drop Seq's script expects a sorted, unaligned bam as primary input.
+
+You can do this with Picard's FastqToSam tool, if you have fastq files.
 
 ```BASH
-export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
+export DROP_SEQ_PATH=~/Drop-seq_tools-1.13
+export PICARD_PATH=${DROP_SEQ_PATH}/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B3_S1_L001_R1_001.fastq.gz \
 	F2=B3_S1_L001_R2_001.fastq.gz \
@@ -316,7 +318,8 @@ java -jar $PICARD_PATH/picard.jar FastqToSam \
 	O=B3_S1_L004.bam SM=B3_S1_L004
 
 
-export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
+export DROP_SEQ_PATH=~/Drop-seq_tools-1.13
+export PICARD_PATH=${DROP_SEQ_PATH}/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F1=B4_S2_L001_R1_001.fastq.gz \
 	F2=B4_S2_L001_R2_001.fastq.gz \
@@ -334,24 +337,16 @@ java -jar $PICARD_PATH/picard.jar FastqToSam \
 	F2=B4_S2_L004_R2_001.fastq.gz \
 	O=B4_S2_L004.bam SM=B4_S2_L004
 
-
-export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
-java -jar $PICARD_PATH/picard.jar FastqToSam \
-
-java -jar picard.jar FastqToSam \
-	F1=$(cygpath -w /cygdrive/c/BaseSpace/Minkyung_1763-56931876/1763_01-78286209/1A_S4_L001_R1_001.fastq.gz ) \
-	F2=$(cygpath -w /cygdrive/c/BaseSpace/Minkyung_1763-56931876/1763_01-78286209/1A_S4_L001_R2_001.fastq.gz ) \
-	SM=B1A_S4_L001 O=B1A_S4_L001.bam
-
 ```
 
 
 ###	Merge sample bam files
 
-If your sample is comprised of multiple pairs of FASTQ files, merge them with ...
+If your sample is comprised of multiple pairs of FASTQ files, merge them with something like ...
 
 ```BASH
-export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
+export DROP_SEQ_PATH=~/Drop-seq_tools-1.13
+export PICARD_PATH=${DROP_SEQ_PATH}/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	INPUT=B3_S1_L001.bam \
 	INPUT=B3_S1_L002.bam \
@@ -362,7 +357,8 @@ java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	OUTPUT=B3.bam
 
 
-export PICARD_PATH=~/Drop-seq_tools-1.13/3rdParty/picard/
+export DROP_SEQ_PATH=~/Drop-seq_tools-1.13
+export PICARD_PATH=${DROP_SEQ_PATH}/3rdParty/picard/
 java -jar $PICARD_PATH/picard.jar MergeSamFiles \
 	INPUT=B4_S2_L001.bam \
 	INPUT=B4_S2_L002.bam \
@@ -400,7 +396,7 @@ Options:
 	--referencefasta (-r) STRING : Reference fasta of the Drop-seq reference metadata bundle
 
 Default option values:
-	--drop_seq                /Users/jakewendt/Downloads/Drop-seq_tools-1.13
+	--drop_seq                /Users/jakewendt/Drop-seq_tools-1.13
 	--estimated-num-cells ... 20000
 	--genomedir ............. ./myRef
 	--referencefasta ........ ./myRef/myRef.fasta
@@ -416,7 +412,7 @@ Drop Seq's script expects an unaligned bam as primary input.
 
 
 ```BASH
-export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
+export DROP_SEQ_PATH=~/Drop-seq_tools-1.13
 
 drop_seq.bash \
 	--drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
@@ -427,7 +423,7 @@ drop_seq.bash \
 ```
 
 ```BASH
-export DROP_SEQ_PATH=~/Downloads/Drop-seq_tools-1.13
+export DROP_SEQ_PATH=~/Drop-seq_tools-1.13
 
 nohup drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
 	--estimated-num-cells 20000 --genomedir ${PWD}/mm10STAR \
