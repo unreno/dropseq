@@ -23,13 +23,24 @@ It was developed with the following requirements.
 Newer versions may work, but they have not been tested.
 
 
+
+
 Testing with newer versions ...
 
-* STAR 2.6.1c
+* STAR
   * wget -O STAR-2.6.1c.tar.gz https://github.com/alexdobin/STAR/archive/2.6.1c.tar.gz
-* Drop Seq 2.0.0
+  * wget -O STAR-2.7.1a.tar.gz https://github.com/alexdobin/STAR/archive/2.7.1a.tar.gz
+* Drop Seq
   * https://github.com/broadinstitute/Drop-seq/releases
   * wget https://github.com/broadinstitute/Drop-seq/releases/download/v2.0.0/Drop-seq_tools-2.0.0.zip
+  * wget https://github.com/broadinstitute/Drop-seq/releases/download/v2.3.0/Drop-seq_tools-2.3.0.zip
+* R packages
+  * if (!requireNamespace("BiocManager", quietly = TRUE))
+    * install.packages("BiocManager")
+  * BiocManager::install(c("devtools", "Seurat","pryr","gdata"),update = TRUE, ask = FALSE)
+
+
+
 
 
 

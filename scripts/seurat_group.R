@@ -12,6 +12,10 @@ rm(args)
 #pattern=sprintf("^%s_",last)
 #print(paste0("Will be searching pattern ", pattern))
 
+#	if (!requireNamespace("BiocManager", quietly = TRUE))
+#		install.packages("BiocManager")
+#	BiocManager::install(c("devtools", "Seurat","pryr","gdata"),update = TRUE, ask = FALSE)
+
 print("Loading libraries")
 
 library(devtools)

@@ -1,8 +1,12 @@
 #!/usr/bin/env Rscript
 
 
-#	source("https://bioconductor.org/biocLite.R")
-#	biocLite( c( "devtools", "Seurat","pryr","gdata") )
+#	OLD source("https://bioconductor.org/biocLite.R")
+#	OLD biocLite( c( "devtools", "Seurat","pryr","gdata") )
+
+#	if (!requireNamespace("BiocManager", quietly = TRUE))
+#		install.packages("BiocManager")
+#	BiocManager::install(c("devtools", "Seurat","pryr","gdata"),update = TRUE, ask = FALSE)
 
 print("Loading libraries")
 
