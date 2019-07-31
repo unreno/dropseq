@@ -1,12 +1,8 @@
 #!/usr/bin/env Rscript
 
-
-#	OLD source("https://bioconductor.org/biocLite.R")
-#	OLD biocLite( c( "devtools", "Seurat","pryr","gdata") )
-
 #	if (!requireNamespace("BiocManager", quietly = TRUE))
 #		install.packages("BiocManager")
-#	BiocManager::install(c("devtools", "Seurat","pryr","gdata"),update = TRUE, ask = FALSE)
+#	BiocManager::install(c("devtools","Seurat","pryr","gdata","dplyr","umap"),update = TRUE, ask = FALSE)
 
 print("Loading libraries")
 
@@ -20,113 +16,192 @@ library(pryr)
 
 library(gdata)
 
-
-#	This is a bit excessive
-library(optparse)
-
-#	default action is "store"
-#	default dest variable are the options without the leading dashes
-option_list = list(
-	make_option("--redo", action="store_true", default=FALSE,
-		help="load saved R file rather than load error_detected.dge.txt.gz")
-);
-
-opt_parser = OptionParser(option_list=option_list);
-opt = parse_args(opt_parser);
-
-
+library(dplyr)
+#	for function "%>%"
 
 
 print(paste0("Starting at :",date(),":"))
 
+print("Loading InitialSeuratObjectSample.RData")
+print(paste0("mem_used before loading seurat object :",humanReadable(mem_used()),": at :", date(),":"))
+load("InitialSeuratObjectSample.RData")
+print(paste0("mem_used after loading seurat object :",humanReadable(mem_used()),": at :", date(),":"))
+
 #	from http://satijalab.org/seurat/Seurat_AlignmentTutorial.html
-if( opt$redo ) {
-	print("Loading InitialSeuratObjectSample.RData")
-	print(paste0("mem_used before loading seurat object :",humanReadable(mem_used()),": at :", date(),":"))
-	load("InitialSeuratObjectSample.RData")
-	print(paste0("mem_used after loading seurat object :",humanReadable(mem_used()),": at :", date(),":"))
-} else {
-
-	print("Loading data from error_detected.dge.txt.gz")
-
-	print(paste0("mem_used before read table :",humanReadable(mem_used()),": at :", date(),":"))
-
-	# load data
-	ds.data <- read.table("error_detected.dge.txt.gz",row.names=1,header=T)
-	#	For 1, ( 17153128 Dec 30 01:52 error_detected.dge.txt.gz )
-	#	Took over 1.5 hours and 76GB memory so far
-
-	print(paste0("mem_used after read table :",humanReadable(mem_used()),": at :", date(),":"))
-
-	print(paste0("nrow(ds.data) :",nrow(ds.data),":"))
-	print(paste0("ncol(ds.data) :",ncol(ds.data),":"))
-	print(paste0("object_size(ds.data) :",object_size(ds.data),":"))
-
-
-	#ds <- CreateSeuratObject(raw.data = ds.data, min.cells = 3,  min.genes = 200, is.expr=1)
-	#
-	#	Error in if (!nreplace) return(x) : missing value where TRUE/FALSE needed
-	#	Calls: CreateSeuratObject ... suppressMessages -> withCallingHandlers -> [<- -> [<-.data.frame
-	#	In addition: Warning message:
-	#	In sum(i, na.rm = TRUE) : integer overflow - use sum(as.numeric(.))
-	#	Execution halted
-	#
-	#	Maybe, we need to remove "is.expr=1"?
-	#
-	#	ds <- CreateSeuratObject(raw.data = ds.data, min.cells = 3,  min.genes = 200)
-	#
-	#	Or filter more data at DigitalExpression stage in dropseq (i.e. MIN_NUM_GENES_PER_CELL=2000 instead of 100)?
-	#	Others kept only 0.1% of their data for Seurat.
-	#
-	#	Trying removing is.expr=1
-
-	print(paste0("mem_used before Garbage Collection :",humanReadable(mem_used()),": at :", date(),":"))
-
-	print("Garbage collection before")
-	gc(verbose=T)
-	print(paste0("mem_used after Garbage Collection, before CreateSeurat :",humanReadable(mem_used()),": at :", date(),":"))
-
-	print("CreateSeuratObject")
-#	ds <- CreateSeuratObject(raw.data = ds.data, min.cells = 3,  min.genes = 200)
-#	ds <- CreateSeuratObject(raw.data = ds.data, min.cells = 3,  min.genes = 10)	#	20180314
-	ds <- CreateSeuratObject(raw.data = ds.data, min.cells = 3,  min.genes = 200)	#	20180518
-
-	print(paste0("mem_used after CreateSeurat, before rm(ds.data) :",humanReadable(mem_used()),": at :", date(),":"))
-
-	print("Removing raw ds.data")
-	rm(ds.data)
-
-	print(paste0("mem_used after rm(ds.data) :",humanReadable(mem_used()),": at :", date(),":"))
-
-	print("Garbage collection after")
-	gc(verbose=T)
-
-	print(paste0("mem_used after Garbage Collection :",humanReadable(mem_used()),": at :", date(),":"))
-
-	print(paste0("object_size(ds) :",object_size(ds),":"))
-
-	print("Saving ds")
-	save(ds, file="InitialSeuratObjectSample.RData")
-}
+#
+#	then https://satijalab.org/seurat/essential_commands.html
+#	 and https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html
 
 
 
 
-#	These are gene specific?
+
+print("PercentageFeatureSet")
+# The [[ operator can add columns to object metadata. This is a great place to stash QC stats
+ds[["percent.mt"]] <- PercentageFeatureSet(ds, pattern = "^MT-")
+
+
+print("VlnPlot")
+# Visualize QC metrics as a violin plot
+VlnPlot(ds, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+
+print("CombinePlots")
+# FeatureScatter is typically used to visualize feature-feature relationships, but can be used
+# for anything calculated by the object, i.e. columns in object metadata, PC scores etc.
+plot1 <- FeatureScatter(ds, feature1 = "nCount_RNA", feature2 = "percent.mt")
+plot2 <- FeatureScatter(ds, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
+CombinePlots(plots = list(plot1, plot2))
+
+
+ds <- subset(ds, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
+
+
+print("NormalizeData")
+ds <- NormalizeData(ds, normalization.method = "LogNormalize", scale.factor = 10000)
+#	same as just
+#	ds <- NormalizeData(ds)
+
+
+print("FindVariableFeatures")
+ds <- FindVariableFeatures(ds, selection.method = "vst", nfeatures = 2000)
+
+# Identify the 10 most highly variable genes
+top10 <- head(VariableFeatures(ds), 10)
+
+
+print("CombinePlots")
+# plot variable features with and without labels
+plot1 <- VariableFeaturePlot(ds)
+plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+CombinePlots(plots = list(plot1, plot2))
+
+
+print("ScaleData")
+all.genes <- rownames(ds)
+ds <- ScaleData(ds, features = all.genes)
+
+
+print("RunPCA")
+ds <- RunPCA(ds, features = VariableFeatures(object = ds))
+
+# Examine and visualize PCA results a few different ways
+print(ds[["pca"]], dims = 1:5, nfeatures = 5)
+
+
+print("VizDimLoadings")
+VizDimLoadings(ds, dims = 1:2, reduction = "pca")
+
+
+print("DimPlot")
+DimPlot(ds, reduction = "pca")
+
+
+print("DimHeatmap")
+DimHeatmap(ds, dims = 1, cells = 500, balanced = TRUE)
+
+
+print("DimHeatmap")
+DimHeatmap(ds, dims = 1:15, cells = 500, balanced = TRUE)
+
+
+print("JackStraw")
+# NOTE: This process can take a long time for big datasets, comment out for expediency. More
+# approximate techniques such as those implemented in ElbowPlot() can be used to reduce
+# computation time
+ds <- JackStraw(ds, num.replicate = 100)
+ds <- ScoreJackStraw(ds, dims = 1:20)
+
+
+print("JackStrawPlot")
+JackStrawPlot(ds, dims = 1:15)
+
+
+print("ElbowPlot")
+ElbowPlot(ds)
+
+
+print("FindNeighbors")
+ds <- FindNeighbors(ds, dims = 1:10)
+ds <- FindClusters(ds, resolution = 0.5)
+
+
+# Look at cluster IDs of the first 5 cells
+head(Idents(ds), 5)
+
+
+print("RunUMAP")
+# If you haven't installed UMAP, you can do so via reticulate::py_install(packages = 'umap-learn')
+ds <- RunUMAP(ds, dims = 1:10)
+
+
+print("DimPlot")
+# note that you can set `label = TRUE` or use the LabelClusters function to help label
+# individual clusters
+DimPlot(ds, reduction = "umap")
+
+
+saveRDS(ds, file = "pbmc_tutorial.rds")
+
+
+print("FindMarkers")
+# find all markers of cluster 1
+cluster1.markers <- FindMarkers(ds, ident.1 = 1, min.pct = 0.25)
+head(cluster1.markers, n = 5)
+
+#	Only works if 5 clusters
+#	print("FindMarkers")
+#	# find all markers distinguishing cluster 5 from clusters 0 and 3
+#	cluster5.markers <- FindMarkers(ds, ident.1 = 5, ident.2 = c(0, 3), min.pct = 0.25)
+#	head(cluster5.markers, n = 5)
+
+
+print("FindAllMarkers")
+# find markers for every cluster compared to all remaining cells, report only the positive ones
+ds.markers <- FindAllMarkers(ds, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+ds.markers %>% group_by(cluster) %>% top_n(n = 2, wt = avg_logFC)
+
+
+print("FindMarkers")
+cluster1.markers <- FindMarkers(ds, ident.1 = 0, logfc.threshold = 0.25, test.use = "roc", only.pos = TRUE)
+
+#
+#	This is very specific to the data.
+#	  None of the requested variables were found: MS4A1, CD79A
+#	VlnPlot(ds, features = c("MS4A1", "CD79A"))
+#
+#	This too.
+# you can plot raw counts as well
+#	  None of the requested variables were found: NKG7, PF4
+#	VlnPlot(ds, features = c("NKG7", "PF4"), slot = "counts", log = TRUE)
+#
+#	Same here
+#	Error: None of the requested features were found: MS4A1, GNLY, CD3E, CD14, FCER1A, FCGR3A, LYZ, PPBP, CD8A in slot data
+#	FeaturePlot(ds, features = c("MS4A1", "GNLY", "CD3E", "CD14", "FCER1A", "FCGR3A", "LYZ", "PPBP", "CD8A"))
+#
+
+print("top10 DoHeatmap")
+top10 <- ds.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
+DoHeatmap(ds, features = top10$gene) + NoLegend()
+
+#
+#	Seems specific too
+#new.cluster.ids <- c("Naive CD4 T", "Memory CD4 T", "CD14+ Mono", "B", "CD8 T", "FCGR3A+ Mono", "NK", "DC", "Platelet")
+#names(new.cluster.ids) <- levels(ds)
+#ds <- RenameIdents(ds, new.cluster.ids)
+#DimPlot(ds, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+#
+
+
+saveRDS(ds, file = "pbmc3k_final.rds")
+
+##################################################
 
 
 
-#print("Creating VlnPlot")
-#VlnPlot(object = ds, features.plot = c("nGene", "nUMI"), nCol = 2)
-#print(paste0("mem_used after VlnPlot :",humanReadable(mem_used()),": at :", date(),":"))
-
-#print("Creating GenePlot")
-#GenePlot(object = ds, gene1 = "nUMI", gene2 = "nGene")
-#print(paste0("mem_used after GenePlot :",humanReadable(mem_used()),": at :", date(),":"))
 
 
 
-#Error in plot.window(...) : need finite 'xlim' values
 
 
 
@@ -134,14 +209,57 @@ print("NormalizeData")
 ds <- NormalizeData(object = ds)
 print(paste0("mem_used after NormalizeData :",humanReadable(mem_used()),": at :", date(),":"))
 
-print("ScaleDate")
+
+
+#	Not in Seurat version 3
+#print("FindVariableGenes")
+##ds <- FindVariableGenes(object = ds, do.plot = FALSE)
+#ds <- FindVariableGenes(object = ds, do.plot = TRUE)
+#print(paste0("mem_used after FindVariableGenes :",humanReadable(mem_used()),": at :", date(),":"))
+#	But this is
+print("FindVariableFeatures")	#	must be run before calling RunPCA
+ds <- FindVariableFeatures(object = ds, do.plot = TRUE)
+print(paste0("mem_used after FindVariableFeatures :",humanReadable(mem_used()),": at :", date(),":"))
+
+
+print("ScaleData")
 ds <- ScaleData(object = ds)
 print(paste0("mem_used after ScaleData :",humanReadable(mem_used()),": at :", date(),":"))
 
-print("FindVariableGenes")
-#ds <- FindVariableGenes(object = ds, do.plot = FALSE)
-ds <- FindVariableGenes(object = ds, do.plot = TRUE)
-print(paste0("mem_used after FindVariableGenes :",humanReadable(mem_used()),": at :", date(),":"))
+
+
+#	print("RunPCA")
+#	ds <- RunPCA(object = ds)
+#	print("FindNeighbors")
+#	ds <- FindNeighbors(object = ds)
+#	print("FindClusters")
+#	ds <- FindClusters(object = ds)
+#	print("RunTSNE")
+#	ds <- RunTSNE(object = ds)
+#	print("DimPlot")
+#	DimPlot(object = ds, reduction = "tsne")
+
+
+
+#	https://satijalab.org/seurat/essential_commands.html
+#ds.counts <- Read10X(data.dir = "~/Downloads/pbmc3k/filtered_gene_bc_matrices/hg19/")
+#ds <- CreateSeuratObject(counts = ds.counts)
+#ds <- NormalizeData(object = ds)
+#ds <- FindVariableFeatures(object = ds)
+#ds <- ScaleData(object = ds)
+#ds <- RunPCA(object = ds)
+#ds <- FindNeighbors(object = ds)
+#ds <- FindClusters(object = ds)
+#ds <- RunTSNE(object = ds)
+#DimPlot(object = ds, reduction = "tsne")
+
+
+
+
+
+
+
+
 
 
 #	from http://satijalab.org/seurat/pbmc3k_tutorial.html
@@ -152,16 +270,28 @@ print(paste0("mem_used after RunPCA :",humanReadable(mem_used()),": at :", date(
 
 print("PrintPCA")
 # Examine and visualize PCA results a few different ways
-PrintPCA(object = ds, pcs.print = 1:5, genes.print = 5, use.full = FALSE)
-print(paste0("mem_used after PrintPCA :",humanReadable(mem_used()),": at :", date(),":"))
+print(ds[["pca"]], dims = 1:5, nfeatures = 5)
+#
+#	Not in Version 3
+#
+#PrintPCA(object = ds, pcs.print = 1:5, genes.print = 5, use.full = FALSE)
+#print(paste0("mem_used after PrintPCA :",humanReadable(mem_used()),": at :", date(),":"))
 
-print("VizPCA")
-VizPCA(object = ds, pcs.use = 1:2)
-print(paste0("mem_used after VizPCA :",humanReadable(mem_used()),": at :", date(),":"))
+#print("VizPCA")
+#
+#	Not in Version 3
+#
+#VizPCA(object = ds, pcs.use = 1:2)
+#print(paste0("mem_used after VizPCA :",humanReadable(mem_used()),": at :", date(),":"))
+#	print("VizDimLoadings")
+#	VizDimLoadings(ds, dims = 1:2, reduction = "pca")
 
-print("PCAPlot")
-PCAPlot(object = ds, dim.1 = 1, dim.2 = 2)
-print(paste0("mem_used after PCAPlot :",humanReadable(mem_used()),": at :", date(),":"))
+print("DimPlot")
+DimPlot(ds, reduction = "pca")
+#	save as
+#	print("PCAPlot")
+#	PCAPlot(object = ds, dim.1 = 1, dim.2 = 2)
+#	print(paste0("mem_used after PCAPlot :",humanReadable(mem_used()),": at :", date(),":"))
 
 # ProjectPCA scores each gene in the dataset (including genes not included
 # in the PCA) based on their correlation with the calculated components.
@@ -169,19 +299,31 @@ print(paste0("mem_used after PCAPlot :",humanReadable(mem_used()),": at :", date
 # that are strongly correlated with cellular heterogeneity, but may not have
 # passed through variable gene selection.  The results of the projected PCA
 # can be explored by setting use.full=T in the functions above
-print("ProjectPCA")
-ds <- ProjectPCA(object = ds, do.print = FALSE)
-print(paste0("mem_used after ProjectPCA :",humanReadable(mem_used()),": at :", date(),":"))
+#
+#	Not in Version 3
+#
+#print("ProjectPCA")
+#ds <- ProjectPCA(object = ds, do.print = FALSE)
+#print(paste0("mem_used after ProjectPCA :",humanReadable(mem_used()),": at :", date(),":"))
 
-print("Making a couple Heat Maps")
 
-print("PCHeatmap")
-PCHeatmap(object = ds, pc.use = 1, cells.use = 500, do.balanced = TRUE, label.columns = FALSE)
-print(paste0("mem_used after PCHeatmap :",humanReadable(mem_used()),": at :", date(),":"))
 
-print("PCHeatmap")
-PCHeatmap(object = ds, pc.use = 1:12, cells.use = 500, do.balanced = TRUE, label.columns = FALSE, use.full = FALSE)
-print(paste0("mem_used after PCHeatmap :",humanReadable(mem_used()),": at :", date(),":"))
+#	Use those above
+#	print("Making a couple Heat Maps")
+#	
+#	#print("PCHeatmap")
+#	#PCHeatmap(object = ds, pc.use = 1, cells.use = 500, do.balanced = TRUE, label.columns = FALSE)
+#	#print(paste0("mem_used after PCHeatmap :",humanReadable(mem_used()),": at :", date(),":"))
+#	print("DimHeatmap")
+#	DimHeatmap(ds, dims = 1, cells = 500, balanced = TRUE)
+#	
+#	#print("PCHeatmap")
+#	#PCHeatmap(object = ds, pc.use = 1:12, cells.use = 500, do.balanced = TRUE, label.columns = FALSE, use.full = FALSE)
+#	#print(paste0("mem_used after PCHeatmap :",humanReadable(mem_used()),": at :", date(),":"))
+#	print("DimHeatmap")
+#	DimHeatmap(ds, dims = 1:15, cells = 500, balanced = TRUE)
+
+
 
 # NOTE: This process can take a long time for big datasets, comment out for
 # expediency.  More approximate techniques such as those implemented in
@@ -228,12 +370,19 @@ print("Finding Clusters")
 # using the same graph but with a different resolution value (see docs for
 # full details)
 print("FindClusters")
-ds <- FindClusters(object = ds, reduction.type = "pca", dims.use = 1:10, resolution = 0.6, print.output = 0, save.SNN = TRUE)
-print(paste0("mem_used after FindClusters :",humanReadable(mem_used()),": at :", date(),":"))
+#ds <- FindClusters(object = ds, reduction.type = "pca", dims.use = 1:10, resolution = 0.6, print.output = 0, save.SNN = TRUE)
+#print(paste0("mem_used after FindClusters :",humanReadable(mem_used()),": at :", date(),":"))
+ds <- FindNeighbors(ds, dims = 1:10)
+ds <- FindClusters(ds, resolution = 0.5)
 
-print("PrintFindClustersParams")
-PrintFindClustersParams(object = ds)
-print(paste0("mem_used after PrintFindClustersParams :",humanReadable(mem_used()),": at :", date(),":"))
+
+
+#
+#	Not in Version 3
+#
+#print("PrintFindClustersParams")
+#PrintFindClustersParams(object = ds)
+#print(paste0("mem_used after PrintFindClustersParams :",humanReadable(mem_used()),": at :", date(),":"))
 
 # While we do provide function-specific printing functions, the more general
 # function to print calculation parameters is PrintCalcParams().

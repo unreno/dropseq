@@ -14,7 +14,7 @@ rm(args)
 
 #	if (!requireNamespace("BiocManager", quietly = TRUE))
 #		install.packages("BiocManager")
-#	BiocManager::install(c("devtools", "Seurat","pryr","gdata"),update = TRUE, ask = FALSE)
+#	BiocManager::install(c("devtools","Seurat","pryr","gdata","dplyr"),update = TRUE, ask = FALSE)
 
 print("Loading libraries")
 

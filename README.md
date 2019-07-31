@@ -2,45 +2,29 @@
 
 This repository is a collection of scripts for using and analysing Drop Seq data.
 
-It was developed with the following requirements.
+It was developed with older version but currently runs with the following requirements.
 
-* STAR - STAR-2.5.3a.tar.gz ( https://github.com/alexdobin/STAR/releases )
-  * wget -O STAR-2.5.3a.tar.gz https://github.com/alexdobin/STAR/archive/2.5.3a.tar.gz
-* Picard - picard.jar ( http://broadinstitute.github.io/picard/ )
-  * https://github.com/broadinstitute/picard/releases/tag/2.18.15
-  * https://github.com/broadinstitute/picard/releases/latest
-  * grep Implementation-Version <( unzip -p picard.jar META-INF/MANIFEST.MF )
-  * Implementation-Version: 2.18.15-SNAPSHOT
-  * Hosever, a version of picard.jar is included in the Drop Seq tools
-* Drop Seq 1.13
-  * Drop\_seq - Drop-seq\_tools-1.13.zip ( http://mccarrolllab.com/dropseq/ )
-  * wget https://github.com/broadinstitute/Drop-seq/releases/download/v1.13/Drop-seq_tools-1.13.zip
-* R version 3.5.1 (2018-07-02) -- "Feather Spray"
-  * source("https://bioconductor.org/biocLite.R")
-  * biocLite( c("devtools","Seurat","pryr","gdata","optparse") )
-
-
-Newer versions may work, but they have not been tested.
-
-
-
-
-Testing with newer versions ...
-
-* STAR
-  * wget -O STAR-2.6.1c.tar.gz https://github.com/alexdobin/STAR/archive/2.6.1c.tar.gz
+* STAR - STAR-2.7.1a.tar.gz ( https://github.com/alexdobin/STAR/releases )
   * wget -O STAR-2.7.1a.tar.gz https://github.com/alexdobin/STAR/archive/2.7.1a.tar.gz
-* Drop Seq
-  * https://github.com/broadinstitute/Drop-seq/releases
-  * wget https://github.com/broadinstitute/Drop-seq/releases/download/v2.0.0/Drop-seq_tools-2.0.0.zip
+* Drop Seq 2.3.0
+  * Drop\_seq - Drop-seq\_tools-2.3.0.zip ( http://mccarrolllab.com/dropseq/ )
   * wget https://github.com/broadinstitute/Drop-seq/releases/download/v2.3.0/Drop-seq_tools-2.3.0.zip
+* R version 3.5.1 (2018-07-02) -- "Feather Spray"
 * R packages
   * if (!requireNamespace("BiocManager", quietly = TRUE))
     * install.packages("BiocManager")
-  * BiocManager::install(c("devtools", "Seurat","pryr","gdata"),update = TRUE, ask = FALSE)
+  * BiocManager::install(c("devtools","Seurat","pryr","gdata","dplyr"),update = TRUE, ask = FALSE)
+
+* R packages ( Seurat 3 is much different than Seurat 2. )
+  * require(devtools)
+  * install_version('Seurat',version='2.3.4')
 
 
 
+
+
+
+Newer versions may work, but they have not been tested.
 
 
 
@@ -141,6 +125,7 @@ The `.fasta` file includes the "chr" prefix, whilst the `.gtf` does not. Why?
 
 I editted the `.fasta` stripping the "chr" prefix before recreating the `.dict` and `.refFlat` files.
 
+( 20190726 - I just checked this and it is fine. Neither have "chr". Must've had a different copy.)
 
 
 This isn't the best check, but its something.
