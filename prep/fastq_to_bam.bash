@@ -178,13 +178,12 @@ for bam in B?.bam ; do
 		echo "Write-protected $f exists. Skipping."		#	DIRECTORY
 	else
 		echo "Creating $f"
-#		drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
-#			--star ~/.local/STAR-2.7.1a/bin/Linux_x86_64/STAR \
-#			--genomedir ~/.github/unreno/dropseq/prep/mm10x.STAR-2.7.1a \
-#			--referencefasta ~/.github/unreno/dropseq/prep/mm10x/mm10x.fasta \
-#			${base}.bam > ${base}.log
-#			#--estimated-num-cells 20000 \
-#		chmod -R a-w $f
+		drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
+			--star ~/.local/STAR-2.7.1a/bin/Linux_x86_64/STAR \
+			--genomedir ~/.github/unreno/dropseq/prep/mm10x.STAR-2.7.1a \
+			--referencefasta ~/.github/unreno/dropseq/prep/mm10x/mm10x.fasta \
+			${base}.bam > ${base}.log
+		chmod -R a-w $f
 	fi
 
 done
