@@ -123,18 +123,68 @@ for l1 in *_L001.bam ; do
 		chmod a-w $f
 	fi
 
+done
+
+
+for a in B?A.bam ; do
+	echo $a
+	base=$( basename $a A.bam )
+
+	f=${base}.bam
+	if [ -f $f ] && [ ! -w $f ] ; then
+		echo "Write-protected $f exists. Skipping."
+	else
+		echo "Creating $f"
+		java -jar $PICARD_PATH/picard.jar MergeSamFiles \
+			INPUT=${base}A.bam \
+			INPUT=${base}B.bam \
+			ASSUME_SORTED=true \
+			SORT_ORDER=queryname \
+			OUTPUT=${base}.bam
+		chmod a-w $f
+	fi
+
+done
+
+for a in B?-1.bam ; do
+	echo $a
+	base=$( basename $a -1.bam )
+
+	f=${base}.bam
+	if [ -f $f ] && [ ! -w $f ] ; then
+		echo "Write-protected $f exists. Skipping."
+	else
+		echo "Creating $f"
+		java -jar $PICARD_PATH/picard.jar MergeSamFiles \
+			INPUT=${base}-1.bam \
+			INPUT=${base}-2.bam \
+			INPUT=${base}-3.bam \
+			INPUT=${base}-4.bam \
+			ASSUME_SORTED=true \
+			SORT_ORDER=queryname \
+			OUTPUT=${base}.bam
+		chmod a-w $f
+	fi
+
+done
+
+
+for bam in B?.bam ; do
+	echo $bam
+	base=$( basename $bam .bam )
+
 	f=${base}
 	if [ -d $f ] && [ ! -w $f ] ; then
 		echo "Write-protected $f exists. Skipping."		#	DIRECTORY
 	else
 		echo "Creating $f"
-		drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
-			--star ~/.local/STAR-2.7.1a/bin/Linux_x86_64/STAR \
-			--genomedir ~/.github/unreno/dropseq/prep/mm10x.STAR-2.7.1a \
-			--referencefasta ~/.github/unreno/dropseq/prep/mm10x/mm10x.fasta \
-			${base}.bam > ${base}.log
-			#--estimated-num-cells 20000 \
-		chmod -R a-w $f
+#		drop_seq.bash --drop_seq ${DROP_SEQ_PATH}/Drop-seq_alignment.sh \
+#			--star ~/.local/STAR-2.7.1a/bin/Linux_x86_64/STAR \
+#			--genomedir ~/.github/unreno/dropseq/prep/mm10x.STAR-2.7.1a \
+#			--referencefasta ~/.github/unreno/dropseq/prep/mm10x/mm10x.fasta \
+#			${base}.bam > ${base}.log
+#			#--estimated-num-cells 20000 \
+#		chmod -R a-w $f
 	fi
 
 done

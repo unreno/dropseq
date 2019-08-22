@@ -291,62 +291,64 @@ while [ $# -ne 0 ] ; do
 			TMP_DIR=/tmp/jake/ \
 			INPUT=final.bam \
 			OUTPUT=final.dge.txt.gz \
-			CELL_BC_FILE=cell_bc_file.txt.gz \
 			SUMMARY=out_gene_exon_tagged.dge.summary.txt \
 			MIN_NUM_GENES_PER_CELL=100"
+
+			#	Don't use this as it overrides the MIN_NUM_GENES_PER_CELL option
+			#CELL_BC_FILE=cell_bc_file.txt.gz \
 		echo $cmd
 		$cmd
 
 	fi
 
 
-	if [ -f InitialSeuratObjectSample.RData ] ; then
-
-		echo "InitialSeuratObjectSample.RData exists. create_seurat.R already run."
-
-	else
-
-		if [ -f final.dge.txt.gz ] ; then
-
-			#	If its too big, it will run for days and then run out of memory/swap space
-			#70514494 B6/final.dge.txt.gz
-			if [ $( wc -c < final.dge.txt.gz ) -lt 70000000 ] ; then
-
-				echo "Running create_seurat.R"
-
-				cmd=create_seurat.R
-				echo $cmd
-				$cmd
-
-			fi
-
-		fi
-
-	fi
-
-
-	if [ -f InitialSeuratObjectSample.RData ] ; then
-
-		if [ -f Rplots.pdf ] ; then
-
-			echo "Rplots.pdf exists. seurat.R already run."
-
-		else
-
-			echo "Running seurat.R"
-
-			#	R is pretty bad at garbage collection.
-			#	Reading final.dge.txt.gz and creating the seurat object then quiting.
-			#	Then running another script that reads in the seurat works well.
-
-			#		cmd="seurat.R --redo"	#	this is the default now
-			cmd="seurat.R"
-			echo $cmd
-			$cmd
-
-		fi
-
-	fi
+#	if [ -f InitialSeuratObjectSample.RData ] ; then
+#
+#		echo "InitialSeuratObjectSample.RData exists. create_seurat.R already run."
+#
+#	else
+#
+#		if [ -f final.dge.txt.gz ] ; then
+#
+#			#	If its too big, it will run for days and then run out of memory/swap space
+#			#70514494 B6/final.dge.txt.gz
+#			#if [ $( wc -c < final.dge.txt.gz ) -lt 70000000 ] ; then
+#
+#				echo "Running create_seurat.R"
+#
+#				cmd=create_seurat.R
+#				echo $cmd
+#				$cmd
+#
+#			#fi
+#
+#		fi
+#
+#	fi
+#
+#
+#	if [ -f InitialSeuratObjectSample.RData ] ; then
+#
+#		if [ -f Rplots.pdf ] ; then
+#
+#			echo "Rplots.pdf exists. seurat.R already run."
+#
+#		else
+#
+#			echo "Running seurat.R"
+#
+#			#	R is pretty bad at garbage collection.
+#			#	Reading final.dge.txt.gz and creating the seurat object then quiting.
+#			#	Then running another script that reads in the seurat works well.
+#
+#			#		cmd="seurat.R --redo"	#	this is the default now
+#			cmd="seurat.R"
+#			echo $cmd
+#			$cmd
+#
+#		fi
+#
+#	fi
 
 	echo
 	shift
