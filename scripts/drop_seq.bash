@@ -302,53 +302,53 @@ while [ $# -ne 0 ] ; do
 	fi
 
 
-#	if [ -f InitialSeuratObjectSample.RData ] ; then
-#
-#		echo "InitialSeuratObjectSample.RData exists. create_seurat.R already run."
-#
-#	else
-#
-#		if [ -f final.dge.txt.gz ] ; then
-#
-#			#	If its too big, it will run for days and then run out of memory/swap space
-#			#70514494 B6/final.dge.txt.gz
-#			#if [ $( wc -c < final.dge.txt.gz ) -lt 70000000 ] ; then
-#
-#				echo "Running create_seurat.R"
-#
-#				cmd=create_seurat.R
-#				echo $cmd
-#				$cmd
-#
-#			#fi
-#
-#		fi
-#
-#	fi
-#
-#
-#	if [ -f InitialSeuratObjectSample.RData ] ; then
-#
-#		if [ -f Rplots.pdf ] ; then
-#
-#			echo "Rplots.pdf exists. seurat.R already run."
-#
-#		else
-#
-#			echo "Running seurat.R"
-#
-#			#	R is pretty bad at garbage collection.
-#			#	Reading final.dge.txt.gz and creating the seurat object then quiting.
-#			#	Then running another script that reads in the seurat works well.
-#
-#			#		cmd="seurat.R --redo"	#	this is the default now
-#			cmd="seurat.R"
-#			echo $cmd
-#			$cmd
-#
-#		fi
-#
-#	fi
+	if [ -f InitialSeuratObjectSample.RData ] ; then
+
+		echo "InitialSeuratObjectSample.RData exists. create_seurat.R already run."
+
+	else
+
+		if [ -f final.dge.txt.gz ] ; then
+
+			#	If its too big, it will run for days and then run out of memory/swap space
+			#70514494 B6/final.dge.txt.gz
+			#if [ $( wc -c < final.dge.txt.gz ) -lt 70000000 ] ; then
+
+				echo "Running create_seurat.R"
+
+				cmd=create_seurat.R
+				echo $cmd
+				$cmd
+
+			#fi
+
+		fi
+
+	fi
+
+
+	if [ -f InitialSeuratObjectSample.RData ] ; then
+
+		if [ -f Rplots.pdf ] ; then
+
+			echo "Rplots.pdf exists. seurat.R already run."
+
+		else
+
+			echo "Running seurat.R"
+
+			#	R is pretty bad at garbage collection.
+			#	Reading final.dge.txt.gz and creating the seurat object then quiting.
+			#	Then running another script that reads in the seurat works well.
+
+			#		cmd="seurat.R --redo"	#	this is the default now
+			cmd="seurat.R"
+			echo $cmd
+			$cmd
+
+		fi
+
+	fi
 
 	echo
 	shift
