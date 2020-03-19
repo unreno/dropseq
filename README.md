@@ -193,7 +193,7 @@ This is odd as it is using the `GSE63472_mm10_reference_metadata.tar.gz` referen
 
 
 
-Alternately, the utility `gtfToGenePred` also creates a `.refFlat` file.
+Alternatively, the utility `gtfToGenePred` also creates a `.refFlat` file.
 I obtained this program from UCSC's Kent Utils.
 It does require some options and does produce a `.refFlat` with columns in a different order so some post run manipulation is required as well.
 I do find it a bit unacceptable that this gene data format is not standardized.
